@@ -3,19 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Transaction extends Model
 {
     protected $guarded = ['id'];
 
-    // Relasi: 1 Transaksi dilayani 1 Kasir (User)
-    public function user()
+    // 1 Transaksi dilayani 1 Kasir
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    // Relasi: 1 Transaksi punya banyak detail menu yang dipesan
-    public function transactionDetails()
+    // 1 Transaksi punya banyak detail
+    public function transactionDetails(): HasMany
     {
         return $this->hasMany(TransactionDetail::class);
     }

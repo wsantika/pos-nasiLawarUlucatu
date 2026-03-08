@@ -3,19 +3,22 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\Product;
+use App\Models\Transaction;
 
 class TransactionDetail extends Model
 {
     protected $guarded = ['id'];
 
-    // Relasi: Detail ini milik 1 Transaksi
-    public function transaction()
+    // Detail milik 1 transaksi
+    public function transaction(): BelongsTo
     {
         return $this->belongsTo(Transaction::class);
     }
 
-    // Relasi: Detail ini merujuk ke 1 Produk/Menu
-    public function product()
+    // Detail merujuk ke 1 produk
+    public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }
