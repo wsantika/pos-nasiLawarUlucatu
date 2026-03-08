@@ -45,4 +45,10 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    // Relasi: 1 User (Kasir) bisa melayani banyak Transaksi
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
 }
