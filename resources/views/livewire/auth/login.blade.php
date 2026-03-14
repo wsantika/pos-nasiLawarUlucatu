@@ -1,4 +1,4 @@
-<x-layouts.guest>
+<div>
     <div
         class="w-96 aspect-square bg-white rounded-2xl shadow-xl p-8 border border-slate-200 flex flex-col justify-center">
         <div class="text-center mb-6">
@@ -50,4 +50,4 @@
             </button>
         </form>
     </div>
-</x-layouts.guest>
+</div>
