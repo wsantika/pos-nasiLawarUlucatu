@@ -1,8 +1,9 @@
 <x-layouts.app>
     @include('livewire.includes.navbar')
-    <div>
+    @include('livewire.admin.components.sidebar-admin')
+    <div class="p-6">
         <!-- Dashboard Content -->
-        <main class="p-6">
+        <main class="lg:pl-64">
             <!-- Stats Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
                 <!-- Card 1 -->
