@@ -40,7 +40,7 @@ class Login extends Component
                 return redirect()->intended('/dashboard');
             }
 
-            return redirect()->intended('/kasir');
+            return redirect('/kasir');
         }
 
         $this->addError('email', 'Email atau password salah.');
