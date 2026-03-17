@@ -22,7 +22,7 @@ class KasirDashboard extends Component
 
     public function render()
     {
-        return view('livewire.kasir.kasir-dashboard');
+        return view('livewire.kasir.dashboard');
     }
 }
 
