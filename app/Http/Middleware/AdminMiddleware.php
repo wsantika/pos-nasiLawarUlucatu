@@ -15,7 +15,7 @@ class AdminMiddleware
         }
 
         if (auth()->user()->role !== 'admin') {
-            return redirect()->route('kasir.dashboard');
+            return redirect()->route('kasir.kasir-dashboard');
         }
 
         return $next($request);
