@@ -16,7 +16,7 @@
 
     <!-- Navigation -->
     <nav class="p-4 space-y-1">
-        <a href="{{ route('dashboard') }}" wire:navigate
+        <a href="{{ route('admin.dashboard') }}" wire:navigate
             class="sidebar-link flex items-center space-x-3 px-4 py-3 {{ request()->routeIs('dashboard') ? 'text-slate-900 bg-slate-100' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50' }} rounded-lg">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -26,8 +26,8 @@
             <span class="font-medium">Dashboard</span>
         </a>
 
-        <a href="#" wire:navigate
-            class="sidebar-link flex items-center space-x-3 px-4 py-3 {{ request()->routeIs('products.*') ? 'text-slate-900 bg-slate-100' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50' }} rounded-lg">
+        <a href="{{ route('admin.product') }}" wire:navigate
+            class="sidebar-link flex items-center space-x-3 px-4 py-3 {{ request()->routeIs('admin.product') ? 'text-slate-900 bg-slate-100' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50' }} rounded-lg">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
@@ -35,7 +35,7 @@
             <span class="font-medium">Produk</span>
         </a>
 
-        <a href="#" wire:navigate
+        <a href="{{ route('admin.category') }}" wire:navigate
             class="sidebar-link flex items-center space-x-3 px-4 py-3 {{ request()->routeIs('categories.*') ? 'text-slate-900 bg-slate-100' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50' }} rounded-lg">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

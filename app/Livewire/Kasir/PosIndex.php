@@ -12,7 +12,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 
 #[Layout('components.layouts.app')]
-#[Title('POS Kasir - Warung Madura POS')]
+#[Title('POS Kasir - POS Nasi Lawar Ulucatu')]
 class PosIndex extends Component
 {
     public $categories;
