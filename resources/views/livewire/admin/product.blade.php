@@ -140,6 +140,21 @@
                                             {{ $product->stock }} pcs
                                         </span>
                                     </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        @if ($product->is_active)
+                                            <span
+                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700 border border-green-200">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-green-500 mr-1.5"></span>
+                                                Aktif
+                                            </span>
+                                        @else
+                                            <span
+                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-500 border border-slate-200">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-slate-400 mr-1.5"></span>
+                                                Nonaktif
+                                            </span>
+                                        @endif
+                                    </td>
                                 </tr>
                             @empty
                             @endforelse
@@ -270,7 +285,9 @@
                                     <label class="block text-sm font-medium text-slate-700 mb-2">Status Produk</label>
                                     <label class="inline-flex items-center cursor-pointer">
                                         <input type="checkbox" wire:model="is_active" class="sr-only peer">
-                                        <div class="relative w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-slate-900 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-slate-900"></div>
+                                        <div
+                                            class="relative w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-slate-900 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-slate-900">
+                                        </div>
                                         <span class="ms-3 text-sm text-slate-700">
                                             {{ $is_active ? 'Aktif (tampil di menu kasir)' : 'Nonaktif (disembunyikan dari kasir)' }}
                                         </span>
