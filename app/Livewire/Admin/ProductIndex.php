@@ -112,10 +112,31 @@ class ProductIndex extends Component
             }
         }
 
-        Product::updateOrCreate(['id' => $this->productId], $data);
-        session()->flash('message', 'Produk berhasil ditambahkan');
+        if ($this->isEdit) {
+            $product = Product::find($this->productId);
+            $product->update($data);
+            session()->flash('message', 'Produk berhasil diupdate');
+        } else {
+            Product::create($data);
+            session()->flash('message', 'Produk berhasil ditambahkan');
+        }
 
         $this->closeModal();
+    }
+
+    public function edit($id)
+    {
+        $product = Product::find($id);
+        $this->productId = $product->id;
+        $this->name = $product->name;
+        $this->sku = $product->sku;
+        $this->category_id = $product->category_id;
+        $this->description = $product->description;
+        $this->price = $product->price;
+        $this->stock = $product->stock;
+        $this->oldImage = $product->image;
+        $this->isEdit = true;
+        $this->showModal = true;
     }
 
     public function delete($id)
