@@ -118,6 +118,14 @@ class ProductIndex extends Component
         $this->closeModal();
     }
 
+    public function delete($id)
+    {
+        $product = Product::find($id);
+
+        $product->delete();
+        session()->flash('massage', 'Produk berhasil dihapus!');
+    }
+
     public function toggleActive($id)
     {
         $product = Product::find($id);
