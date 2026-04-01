@@ -18,7 +18,7 @@ Route::middleware('guest')->group(function () {
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('admin.dashboard');
     Route::get('/products', ProductIndex::class)->name('admin.product');
-    Route::get('/kategori', CategoryIndex::class)->name('admin.category');
+    Route::get('/category', CategoryIndex::class)->name('admin.category');
 });
 
 // Route khusus Kasir (Admin juga boleh akses)

@@ -77,6 +77,25 @@ class CategoryIndex extends Component
         $this->closeModal();
     }
 
+    public function delete($id)
+    {
+        try {
+            $category = Category::find($id);
+
+            // Cek dulu apakah kategori punya produk
+            if ($category->products()->count() > 0) {
+                session()->flash('error', 'Kategori tidak dapat dihapus karena masih memiliki produk');
+                return;
+            }
+
+            $category->delete();
+            session()->flash('message', 'Kategori berhasil dihapus');
+
+        } catch (\Exception $e) {
+            session()->flash('error', 'Terjadi kesalahan saat menghapus kategori');
+        }
+    }
+
     public function render()
     {
         $categories = Category::where('name', 'like', '%' . $this->search . '%')
