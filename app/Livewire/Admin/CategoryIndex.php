@@ -77,6 +77,16 @@ class CategoryIndex extends Component
         $this->closeModal();
     }
 
+    public function edit($id)
+    {
+        $category = Category::find($id);
+        $this->categoryId = $category->id;
+        $this->name = $category->name;
+        $this->description = $category->description;
+        $this->isEdit = true;
+        $this->showModal = true;
+    }
+
     public function delete($id)
     {
         try {
