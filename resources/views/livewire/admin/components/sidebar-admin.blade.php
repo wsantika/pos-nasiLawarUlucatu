@@ -45,7 +45,7 @@
             <span class="font-medium">Kategori</span>
         </a>
 
-        <a href="#" wire:navigate
+        <a href="{{ route('admin.transaction') }}" wire:navigate
             class="sidebar-link flex items-center space-x-3 px-4 py-3 {{ request()->routeIs('transactions.*') ? 'text-slate-900 bg-slate-100' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50' }} rounded-lg">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
