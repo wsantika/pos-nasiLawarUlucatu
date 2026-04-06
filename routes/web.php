@@ -19,7 +19,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
 // Route khusus Kasir (Admin juga boleh akses)
 Route::middleware(['auth', 'kasir'])->group(function () {
-    Route::get('/kasir', KasirDashboard::class)->name('kasir.kasir-dashboard');
+    Route::get('/kasir', KasirDashboard::class)->name('kasir.dashboard');
     Route::get('/pos', PosIndex::class)->name('kasir.pos');
 });
 

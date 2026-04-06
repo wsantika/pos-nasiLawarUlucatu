@@ -36,25 +36,25 @@
                         <i class="fas fa-utensils text-white text-sm"></i>
                     </div>
                     <div>
-                        <p class="text-sm font-bold text-slate-900 leading-tight">Warung Madura</p>
+                        <p class="text-sm font-bold text-slate-900 leading-tight">Nasi Lawar Ulucatu</p>
                         <p class="text-xs text-slate-500 leading-tight">Panel Kasir</p>
                     </div>
                 </div>
 
                 <!-- Navigation -->
                 <div class="flex items-center space-x-2">
-                    <a href="{{ route('kasir.kasir-dashboard') }}"
+                    <a href="{{ route('kasir.dashboard') }}"
                         class="nav-link flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium
-                               {{ request()->routeIs('kasir.kasir-dashboard') ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
+                               {{ request()->routeIs('kasir.dashboard') ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
                         <i
-                            class="fas fa-home {{ request()->routeIs('kasir.kasir-dashboard') ? 'text-white' : 'text-slate-500' }}"></i>
+                            class="fas fa-home {{ request()->routeIs('kasir.dashboard') ? 'text-white' : 'text-slate-500' }}"></i>
                         <span>Beranda</span>
                     </a>
                     <a href="{{ route('kasir.pos') }}"
                         class="nav-link flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium
                                {{ request()->routeIs('kasir.pos') ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
                         <i
-                            class="fas fa-cash-register {{ request()->routeIs('pos.index') ? 'text-white' : 'text-slate-500' }}"></i>
+                            class="fas fa-cash-register {{ request()->routeIs('kasir.pos') ? 'text-white' : 'text-slate-500' }}"></i>
                         <span>Kasir / POS</span>
                     </a>
                 </div>
