@@ -5,7 +5,6 @@
             style="background: radial-gradient(circle at 70% 50%, white 0%, transparent 60%)"></div>
         <div class="relative flex items-center justify-between">
             <div>
-                <h1 class="text-2xl font-bold mb-1">Selamat Datang, {{ auth()->user()->name }} 👋</h1>
                 <p class="text-slate-400 text-sm">{{ now()->format('l, d F Y') }} — Siap melayani pelanggan?</p>
             </div>
             <div class="hidden sm:flex items-center justify-center w-16 h-16 bg-white/10 rounded-2xl">
