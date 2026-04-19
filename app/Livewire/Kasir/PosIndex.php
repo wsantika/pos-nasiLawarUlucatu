@@ -17,6 +17,7 @@ class PosIndex extends Component
     public $selectedCategory = '';
     public $products = []; 
     public $search = ''; 
+    public $cart = [];
 
     public function mount()
     {
@@ -48,6 +49,42 @@ class PosIndex extends Component
     public function updatedSearch()
     {
         $this->loadProducts();
+    }
+
+     public function addToCart($productId)
+    {
+        $product = Product::find($productId);
+
+        if (!$product || $product->stock <= 0) {
+            return;
+        }
+
+        $existingIndex = null;
+
+        foreach ($this->cart as $index => $item) {
+            if ($item['id'] === $productId) {
+                $existingIndex = $index;
+                break;
+            }
+        }
+
+        if ($existingIndex !== null) {
+            if ($this->cart[$existingIndex]['quantity'] < $product->stock) {
+                $this->cart[$existingIndex]['quantity']++;
+                $this->cart[$existingIndex]['subtotal'] = $this->cart[$existingIndex]['quantity'] * $this->cart[$existingIndex]['price'];
+            }
+        } else {
+            $this->cart[] = [
+                'id' => $product->id,
+                'name' => $product->name,
+                'price' => $product->price,
+                'quantity' => 1,
+                'subtotal' => $product->price,
+                'stock' => $product->stock
+            ];
+        }
+
+        $this->calculateTotal();
     }
 
     public function render()
