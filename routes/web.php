@@ -6,6 +6,7 @@ use App\Livewire\Auth\Login;
 use App\Livewire\Admin\Dashboard;
 use App\Livewire\Admin\ProductIndex;
 use App\Livewire\Admin\CategoryIndex;
+use App\Livewire\Admin\TransactionIndex;
 use App\Livewire\Kasir\KasirDashboard;
 use App\Livewire\Kasir\PosIndex;
 
@@ -19,6 +20,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('admin.dashboard');
     Route::get('/products', ProductIndex::class)->name('admin.product');
     Route::get('/category', CategoryIndex::class)->name('admin.category');
+    Route::get('/transaction', TransactionIndex::class)->name('admin.transaction');
 });
 
 // Route khusus Kasir (Admin juga boleh akses)
