@@ -15,7 +15,7 @@ use Livewire\Attributes\Title;
 #[Title('POS Kasir - POS Nasi Lawar Ulucatu')]
 class PosIndex extends Component
 {
-    public $categories;
+    public $categories = [];
     public $products = [];
     public $selectedCategory = '';
     public $search = '';
@@ -35,6 +35,7 @@ class PosIndex extends Component
     {
         $this->categories = Category::all();
         $this->loadProducts();
+        $this->calculateTotal();
     }
 
     public function loadProducts()
@@ -71,6 +72,7 @@ class PosIndex extends Component
         }
 
         $existingIndex = null;
+
         foreach ($this->cart as $index => $item) {
             if ($item['id'] === $productId) {
                 $existingIndex = $index;
@@ -99,6 +101,10 @@ class PosIndex extends Component
 
     public function updateQuantity($index, $action)
     {
+        if (!isset($this->cart[$index])) {
+            return;
+        }
+
         if ($action === 'increase') {
             if ($this->cart[$index]['quantity'] < $this->cart[$index]['stock']) {
                 $this->cart[$index]['quantity']++;
@@ -115,6 +121,10 @@ class PosIndex extends Component
 
     public function removeFromCart($index)
     {
+        if (!isset($this->cart[$index])) {
+            return;
+        }
+
         unset($this->cart[$index]);
         $this->cart = array_values($this->cart);
         $this->calculateTotal();
@@ -124,13 +134,12 @@ class PosIndex extends Component
     {
         $this->subtotal = array_sum(array_column($this->cart, 'subtotal'));
 
-        // Pastikan semua nilai numerik
         $discount = is_numeric($this->discount) ? (float) $this->discount : 0;
         $tax = is_numeric($this->tax) ? (float) $this->tax : 0;
 
         $this->total = (float) $this->subtotal - $discount + $tax;
+        $this->calculateChange();
     }
-
 
     public function updatedDiscount()
     {
@@ -147,6 +156,7 @@ class PosIndex extends Component
         if (empty($this->cart)) {
             return;
         }
+
         $this->showPaymentModal = true;
         $this->paid = $this->total;
         $this->calculateChange();
@@ -162,7 +172,6 @@ class PosIndex extends Component
         $paid = is_numeric($this->paid) ? (float) $this->paid : 0;
         $this->change = max(0, $paid - (float) $this->total);
     }
-
 
     public function processPayment()
     {
@@ -213,7 +222,6 @@ class PosIndex extends Component
         }
     }
 
-
     public function resetTransaction()
     {
         $this->cart = [];
@@ -237,13 +245,22 @@ class PosIndex extends Component
         $this->showPaymentModal = false;
     }
 
-    public function __invoke()
-    {
-        return $this->render();
-    }
-
     public function render()
     {
-        return view('livewire.kasir.pos');
+        return view('livewire.kasir.pos', [
+            'categories' => $this->categories,
+            'products' => $this->products,
+            'cart' => $this->cart,
+            'subtotal' => $this->subtotal,
+            'discount' => $this->discount,
+            'tax' => $this->tax,
+            'total' => $this->total,
+            'paymentMethod' => $this->paymentMethod,
+            'paid' => $this->paid,
+            'change' => $this->change,
+            'showPaymentModal' => $this->showPaymentModal,
+            'showSuccessModal' => $this->showSuccessModal,
+            'lastInvoice' => $this->lastInvoice,
+        ]);
     }
 }
