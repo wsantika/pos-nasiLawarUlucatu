@@ -186,7 +186,10 @@ class PosIndex extends Component
         DB::beginTransaction();
 
         try {
+            $invoiceNumber = 'INV-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -5));
+
             $transaction = Transaction::create([
+                'invoice_number' => $invoiceNumber,
                 'user_id' => auth()->id(),
                 'subtotal' => (float) $this->subtotal,
                 'discount' => (float) $this->discount,
