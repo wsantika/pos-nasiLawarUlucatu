@@ -6,11 +6,14 @@ use Livewire\Component;
 use App\Models\Transaction;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
+use Livewire\WithPagination;
 
 #[Layout('components.layouts.app')]
 #[Title('Transaksi - POS Nasi Lawar Ulucatu')]
 class TransactionIndex extends Component
 {
+    use WithPagination;
+
     public $search = '';
     public $dateFrom = '';
     public $dateTo = '';
@@ -18,6 +21,10 @@ class TransactionIndex extends Component
     public $selectedTransaction;
     public $showDetailModal = false;
 
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
 
     public function viewDetail($id)
     {
