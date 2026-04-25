@@ -14,6 +14,28 @@
                             <h2 class="text-lg font-semibold text-slate-900">Riwayat Transaksi</h2>
                             <p class="text-sm text-slate-500 mt-1">Daftar semua transaksi yang telah dilakukan</p>
                         </div>
+                        <div class="flex flex-col md:flex-row md:items-center space-y-3 md:space-y-0 md:space-x-3">
+                            <div class="relative flex-1">
+                                <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari invoice..."
+                                    class="w-full pl-10 pr-4 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent">
+                                <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                            </div>
+                            <input type="date" wire:model.live="dateFrom"
+                                class="px-4 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent">
+                            <input type="date" wire:model.live="dateTo"
+                                class="px-4 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent">
+                            <select wire:model.live="paymentMethodFilter"
+                                class="px-4 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent bg-white">
+                                <option value="">Semua Metode</option>
+                                <option value="cash">Cash</option>
+                                <option value="transfer">Transfer</option>
+                                <option value="qris">QRIS</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 

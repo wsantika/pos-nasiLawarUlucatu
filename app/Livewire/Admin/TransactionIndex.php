@@ -11,11 +11,13 @@ use Livewire\Attributes\Title;
 #[Title('Transaksi - POS Nasi Lawar Ulucatu')]
 class TransactionIndex extends Component
 {
+    public $search = '';
     public $dateFrom = '';
     public $dateTo = '';
     public $paymentMethodFilter = '';
     public $selectedTransaction;
     public $showDetailModal = false;
+
 
     public function viewDetail($id)
     {
@@ -31,7 +33,20 @@ class TransactionIndex extends Component
 
     public function render()
     {
-        $query = Transaction::with('user');
+        $query = Transaction::with('user')
+            ->where('invoice_number', 'like', '%' . $this->search . '%');
+
+        if ($this->dateFrom) {
+            $query->whereDate('created_at', '>=', $this->dateFrom);
+        }
+
+        if ($this->dateTo) {
+            $query->whereDate('created_at', '<=', $this->dateTo);
+        }
+
+        if ($this->paymentMethodFilter) {
+            $query->where('payment_method', $this->paymentMethodFilter);
+        }
 
         $transactions = $query->latest()->paginate(10);
 
