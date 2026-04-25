@@ -138,8 +138,8 @@
     @if ($showDetailModal && $selectedTransaction)
         <div class="fixed inset-0 z-50 overflow-y-auto">
             <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-                <div class="fixed inset-0 transition-opacity bg-slate-900 bg-opacity-50"
-                    wire:click="closeDetailModal"></div>
+                <div class="fixed inset-0 transition-opacity bg-slate-900 bg-opacity-50" wire:click="closeDetailModal">
+                </div>
 
                 <div
                     class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full">
@@ -168,16 +168,32 @@
                             <div>
                                 <p class="text-sm text-slate-500">Tanggal</p>
                                 <p class="font-semibold text-slate-900">
-                                    {{ $selectedTransaction->created_at->format('d M Y, H:i') }}</p>
+                                    {{ $selectedTransaction->created_at->format('d M Y, H:i') }}
+                                </p>
                             </div>
                             <div>
                                 <p class="text-sm text-slate-500">Kasir</p>
                                 <p class="font-semibold text-slate-900">{{ $selectedTransaction->user->name }}</p>
                             </div>
                             <div>
+                                <p class="text-sm text-slate-500">Tipe Order</p>
+                                <p class="font-semibold text-slate-900">
+                                    {{ $selectedTransaction->order_type === 'dine-in' ? 'Dine-in' : 'Take-away' }}
+                                </p>
+                            </div>
+                            @if ($selectedTransaction->order_type === 'dine-in')
+                                <div>
+                                    <p class="text-sm text-slate-500">Nomor Meja</p>
+                                    <p class="font-semibold text-slate-900">
+                                        {{ $selectedTransaction->table_number ?? '-' }}
+                                    </p>
+                                </div>
+                            @endif
+                            <div>
                                 <p class="text-sm text-slate-500">Metode Pembayaran</p>
                                 <p class="font-semibold text-slate-900">
-                                    {{ ucfirst($selectedTransaction->payment_method) }}</p>
+                                    {{ ucfirst($selectedTransaction->payment_method) }}
+                                </p>
                             </div>
                         </div>
 
@@ -191,10 +207,12 @@
                                         <div class="flex-1">
                                             <p class="font-medium text-slate-900">{{ $detail->product->name }}</p>
                                             <p class="text-sm text-slate-500">{{ $detail->quantity }} x Rp
-                                                {{ number_format($detail->price, 0, ',', '.') }}</p>
+                                                {{ number_format($detail->price, 0, ',', '.') }}
+                                            </p>
                                         </div>
                                         <p class="font-semibold text-slate-900">Rp
-                                            {{ number_format($detail->subtotal, 0, ',', '.') }}</p>
+                                            {{ number_format($detail->subtotal, 0, ',', '.') }}
+                                        </p>
                                     </div>
                                 @endforeach
                             </div>
