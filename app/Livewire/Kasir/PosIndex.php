@@ -25,6 +25,8 @@ class PosIndex extends Component
     public $tax = 0;
     public $total = 0;
     public $paymentMethod = 'cash';
+    public $orderType = 'dine-in';
+    public $tableNumber = '';
     public $paid = 0;
     public $change = 0;
     public $showPaymentModal = false;
@@ -132,12 +134,13 @@ class PosIndex extends Component
 
     public function calculateTotal()
     {
-        $this->subtotal = array_sum(array_column($this->cart, 'subtotal'));
+        $this->subtotal = collect($this->cart)->sum('subtotal');
 
-        $discount = is_numeric($this->discount) ? (float) $this->discount : 0;
-        $tax = is_numeric($this->tax) ? (float) $this->tax : 0;
+        $discount = (float) $this->discount;
+        $tax = (float) $this->tax;
 
-        $this->total = (float) $this->subtotal - $discount + $tax;
+        $this->total = max(0, $this->subtotal - $discount + $tax);
+
         $this->calculateChange();
     }
 
@@ -149,6 +152,13 @@ class PosIndex extends Component
     public function updatedTax()
     {
         $this->calculateTotal();
+    }
+
+    public function updatedOrderType()
+    {
+        if ($this->orderType === 'take-away') {
+            $this->tableNumber = '';
+        }
     }
 
     public function openPaymentModal()
@@ -183,10 +193,37 @@ class PosIndex extends Component
             return;
         }
 
+        $this->validate([
+            'orderType' => 'required|in:dine-in,take-away',
+            'tableNumber' => $this->orderType === 'dine-in'
+                ? 'required|string|max:20'
+                : 'nullable|string|max:20',
+            'paymentMethod' => 'required|in:cash,transfer,qris',
+            'paid' => 'required|numeric|min:' . max(0, (float) $this->total),
+            'discount' => 'nullable|numeric|min:0',
+            'tax' => 'nullable|numeric|min:0',
+        ], [
+            'tableNumber.required' => 'Nomor meja wajib diisi untuk dine-in.',
+            'paid.min' => 'Jumlah pembayaran kurang dari total transaksi.',
+        ]);
+
+        if (empty($this->cart)) {
+            session()->flash('error', 'Keranjang masih kosong.');
+            return;
+        }
+
+        if ((float) $this->discount > (float) $this->subtotal) {
+            session()->flash('error', 'Diskon tidak boleh lebih besar dari subtotal.');
+            return;
+        }
+
         DB::beginTransaction();
 
         try {
+            $invoiceNumber = 'INV-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -5));
+
             $transaction = Transaction::create([
+                'invoice_number' => $invoiceNumber,
                 'user_id' => auth()->id(),
                 'subtotal' => (float) $this->subtotal,
                 'discount' => (float) $this->discount,
@@ -194,7 +231,10 @@ class PosIndex extends Component
                 'total' => $total,
                 'paid' => $paid,
                 'change' => (float) $this->change,
-                'payment_method' => $this->paymentMethod
+                'payment_method' => $this->paymentMethod,
+                'order_type' => $this->orderType,
+                'table_number' => $this->orderType === 'dine-in' ? $this->tableNumber : null,
+                'payment_status' => 'success',
             ]);
 
             foreach ($this->cart as $item) {
@@ -233,6 +273,8 @@ class PosIndex extends Component
         $this->change = 0;
         $this->paymentMethod = 'cash';
         $this->loadProducts();
+        $this->orderType = 'dine-in';
+        $this->tableNumber = '';
     }
 
     public function closeSuccessModal()
@@ -261,6 +303,8 @@ class PosIndex extends Component
             'showPaymentModal' => $this->showPaymentModal,
             'showSuccessModal' => $this->showSuccessModal,
             'lastInvoice' => $this->lastInvoice,
+            'table_number' => $this->orderType === 'dine-in' ? $this->tableNumber : null,
+            'payment_status' => 'success',
         ]);
     }
 }
