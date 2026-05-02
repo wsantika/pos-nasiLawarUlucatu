@@ -137,6 +137,7 @@ class ProductIndex extends Component
         $this->oldImage = $product->image;
         $this->isEdit = true;
         $this->showModal = true;
+        $this->is_active = (bool) $product->is_active;
     }
 
     public function delete($id)

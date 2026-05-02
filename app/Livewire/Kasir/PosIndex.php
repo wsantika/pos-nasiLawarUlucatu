@@ -42,7 +42,9 @@ class PosIndex extends Component
 
     public function loadProducts()
     {
-        $query = Product::with('category')->where('stock', '>', 0);
+        $query = Product::with('category')
+            ->active()
+            ->where('stock', '>', 0);
 
         if ($this->selectedCategory) {
             $query->where('category_id', $this->selectedCategory);
@@ -67,9 +69,14 @@ class PosIndex extends Component
 
     public function addToCart($productId)
     {
-        $product = Product::find($productId);
+        $product = Product::active()
+            ->whereKey($productId)
+            ->first();
 
         if (!$product || $product->stock <= 0) {
+            session()->flash('error', 'Produk tidak tersedia atau sedang dinonaktifkan.');
+            $this->loadProducts();
+
             return;
         }
 
@@ -238,15 +245,28 @@ class PosIndex extends Component
             ]);
 
             foreach ($this->cart as $item) {
+                $product = Product::active()
+                    ->whereKey($item['id'])
+                    ->lockForUpdate()
+                    ->first();
+
+                if (!$product) {
+                    throw new \Exception('Produk "' . $item['name'] . '" sudah dinonaktifkan dan tidak bisa dibeli.');
+                }
+
+                if ($product->stock < $item['quantity']) {
+                    throw new \Exception('Stok produk "' . $product->name . '" tidak mencukupi.');
+                }
+
                 TransactionDetail::create([
                     'transaction_id' => $transaction->id,
-                    'product_id' => $item['id'],
+                    'product_id' => $product->id,
                     'quantity' => $item['quantity'],
                     'price' => $item['price'],
-                    'subtotal' => $item['subtotal']
+                    'subtotal' => $item['subtotal'],
                 ]);
 
-                Product::find($item['id'])->decrement('stock', $item['quantity']);
+                $product->decrement('stock', $item['quantity']);
             }
 
             DB::commit();
