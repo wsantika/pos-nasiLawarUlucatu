@@ -10,6 +10,7 @@ use App\Models\TransactionDetail;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
+use App\Services\ThermalPrinterService;
 
 #[Layout('components.layouts.app')]
 #[Title('POS Kasir - POS Nasi Lawar Ulucatu')]
@@ -270,6 +271,20 @@ class PosIndex extends Component
             }
 
             DB::commit();
+
+            $transaction->load(['details.product', 'user']);
+
+            try {
+                app(ThermalPrinterService::class)->printCustomerReceipt($transaction);
+                app(ThermalPrinterService::class)->printKitchenTicket($transaction);
+            } catch (\Throwable $printError) {
+                report($printError);
+
+                session()->flash(
+                    'error',
+                    'Transaksi berhasil, tetapi struk gagal dicetak: ' . $printError->getMessage()
+                );
+            }
 
             $this->lastInvoice = $transaction->invoice_number ?? '';
             $this->showPaymentModal = false;
