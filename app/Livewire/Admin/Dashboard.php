@@ -2,10 +2,10 @@
 
 namespace App\Livewire\Admin;
 
-use App\Models\Category;
 use App\Models\Product;
 use App\Models\Transaction;
 use App\Models\TransactionDetail;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -17,47 +17,95 @@ class Dashboard extends Component
 {
     private const LOW_STOCK_LIMIT = 10;
 
+    public ?string $dailyDateInput = null;
+    public ?string $monthInput = null;
+
+    public ?string $dailyDate = null;
+    public ?string $monthPeriod = null;
+
+    public function mount(): void
+    {
+        $this->dailyDate = today()->toDateString();
+        $this->dailyDateInput = $this->dailyDate;
+
+        $this->monthPeriod = now()->format('Y-m');
+        $this->monthInput = $this->monthPeriod;
+    }
+
+    public function applyReportFilter(): void
+    {
+        $this->validate([
+            'dailyDateInput' => ['nullable', 'date'],
+            'monthInput' => ['nullable', 'date_format:Y-m'],
+        ], [
+            'dailyDateInput.date' => 'Tanggal laporan harian tidak valid.',
+            'monthInput.date_format' => 'Bulan laporan tidak valid.',
+        ]);
+
+        $this->dailyDate = $this->dailyDateInput ?: today()->toDateString();
+        $this->monthPeriod = $this->monthInput ?: now()->format('Y-m');
+    }
+
+    public function resetReportFilter(): void
+    {
+        $this->resetValidation();
+
+        $this->dailyDate = today()->toDateString();
+        $this->dailyDateInput = $this->dailyDate;
+
+        $this->monthPeriod = now()->format('Y-m');
+        $this->monthInput = $this->monthPeriod;
+    }
+
     private function getDashboardData(): array
     {
-        $today = today()->toDateString();
+        $dailyDate = $this->dailyDate ?: today()->toDateString();
+        $monthPeriod = $this->monthPeriod ?: now()->format('Y-m');
         $limit = self::LOW_STOCK_LIMIT;
 
-        $transactionQuery = Transaction::query()
-            ->whereDate('created_at', $today)
+        [$selectedYear, $selectedMonth] = array_map('intval', explode('-', $monthPeriod));
+
+        $dailyTransactionQuery = Transaction::query()
+            ->whereDate('created_at', $dailyDate)
             ->where('payment_status', 'success');
 
-        $totalProducts = Product::count();
-        $totalCategories = Category::count();
+        $monthlyTransactionQuery = Transaction::query()
+            ->whereYear('created_at', $selectedYear)
+            ->whereMonth('created_at', $selectedMonth)
+            ->where('payment_status', 'success');
 
-        $todayTransactions = (clone $transactionQuery)->count();
-        $todayRevenue = (clone $transactionQuery)->sum('total');
+        $dailyTransactionCount = (clone $dailyTransactionQuery)->count();
+        $dailyRevenue = (clone $dailyTransactionQuery)->sum('total');
 
-        $averageTransaction = $todayTransactions > 0
-            ? (int) floor($todayRevenue / $todayTransactions)
+        $monthlyTransactionCount = (clone $monthlyTransactionQuery)->count();
+        $monthlyRevenue = (clone $monthlyTransactionQuery)->sum('total');
+
+        $dailyAverageTransaction = $dailyTransactionCount > 0
+            ? (int) floor($dailyRevenue / $dailyTransactionCount)
             : 0;
 
-        $totalSoldToday = TransactionDetail::query()
+        $monthlyAverageTransaction = $monthlyTransactionCount > 0
+            ? (int) floor($monthlyRevenue / $monthlyTransactionCount)
+            : 0;
+
+        $dailySoldPortions = TransactionDetail::query()
             ->join('transactions', 'transaction_details.transaction_id', '=', 'transactions.id')
-            ->whereDate('transactions.created_at', $today)
+            ->whereDate('transactions.created_at', $dailyDate)
             ->where('transactions.payment_status', 'success')
             ->sum('transaction_details.quantity');
+
+        $monthlySoldPortions = TransactionDetail::query()
+            ->join('transactions', 'transaction_details.transaction_id', '=', 'transactions.id')
+            ->whereYear('transactions.created_at', $selectedYear)
+            ->whereMonth('transactions.created_at', $selectedMonth)
+            ->where('transactions.payment_status', 'success')
+            ->sum('transaction_details.quantity');
+
+        $remainingPortions = Product::active()->sum('stock');
 
         $lowStockProductsCount = Product::active()
             ->where('stock', '<=', $limit)
             ->count();
-
-        $monthlyRevenue = Transaction::query()
-            ->whereYear('created_at', today()->year)
-            ->whereMonth('created_at', today()->month)
-            ->where('payment_status', 'success')
-            ->sum('total');
-
-        $recentTransactions = Transaction::with('user')
-            ->whereDate('created_at', $today)
-            ->where('payment_status', 'success')
-            ->latest()
-            ->take(5)
-            ->get();
 
         $stockProducts = Product::with('category')
             ->active()
@@ -71,11 +119,18 @@ class Dashboard extends Component
             ->orderBy('stock', 'asc')
             ->get();
 
+        $recentTransactions = Transaction::with('user')
+            ->whereDate('created_at', $dailyDate)
+            ->where('payment_status', 'success')
+            ->latest()
+            ->take(5)
+            ->get();
+
         $topProducts = TransactionDetail::query()
             ->join('transactions', 'transaction_details.transaction_id', '=', 'transactions.id')
             ->join('products', 'transaction_details.product_id', '=', 'products.id')
             ->leftJoin('categories', 'products.category_id', '=', 'categories.id')
-            ->whereDate('transactions.created_at', $today)
+            ->whereDate('transactions.created_at', $dailyDate)
             ->where('transactions.payment_status', 'success')
             ->select(
                 'products.id',
@@ -109,14 +164,21 @@ class Dashboard extends Component
         return [
             'lowStockLimit' => $limit,
 
-            'totalProducts' => $totalProducts,
-            'totalCategories' => $totalCategories,
-            'todayTransactions' => $todayTransactions,
-            'todayRevenue' => $todayRevenue,
-            'averageTransaction' => $averageTransaction,
-            'monthlyRevenue' => $monthlyRevenue,
+            'selectedDailyDate' => $dailyDate,
+            'selectedMonthPeriod' => $monthPeriod,
+            'selectedMonthLabel' => Carbon::create($selectedYear, $selectedMonth, 1)->format('F Y'),
 
-            'totalSoldToday' => $totalSoldToday,
+            'dailyRevenue' => $dailyRevenue,
+            'dailyTransactionCount' => $dailyTransactionCount,
+            'dailyAverageTransaction' => $dailyAverageTransaction,
+            'dailySoldPortions' => $dailySoldPortions,
+
+            'monthlyRevenue' => $monthlyRevenue,
+            'monthlyTransactionCount' => $monthlyTransactionCount,
+            'monthlyAverageTransaction' => $monthlyAverageTransaction,
+            'monthlySoldPortions' => $monthlySoldPortions,
+
+            'remainingPortions' => $remainingPortions,
             'lowStockProductsCount' => $lowStockProductsCount,
 
             'recentTransactions' => $recentTransactions,
