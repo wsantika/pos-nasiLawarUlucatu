@@ -24,10 +24,16 @@
                                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                 </svg>
                             </div>
-                            <input type="date" wire:model.live="dateFrom"
-                                class="px-4 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent">
-                            <input type="date" wire:model.live="dateTo"
-                                class="px-4 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-sm font-medium text-slate-600">Dari:</span>
+                                <input type="date" wire:model.live="dateFrom"
+                                    class="px-4 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent" title="Tanggal Awal">
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-sm font-medium text-slate-600">Sampai:</span>
+                                <input type="date" wire:model.live="dateTo"
+                                    class="px-4 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent" title="Tanggal Akhir">
+                            </div>
                             <select wire:model.live="paymentMethodFilter"
                                 class="px-4 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent bg-white">
                                 <option value="">Semua Metode</option>
@@ -35,7 +41,27 @@
                                 <option value="transfer">Transfer</option>
                                 <option value="qris">QRIS</option>
                             </select>
+                            <button type="button" wire:click="resetFilter"
+                                class="px-4 py-2.5 text-sm font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors">
+                                Reset
+                            </button>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Summary -->
+                <div class="grid grid-cols-1 gap-4 p-6 sm:grid-cols-2">
+                    <div class="rounded-lg border border-slate-200 bg-slate-50 p-4">
+                        <p class="text-sm font-medium text-slate-500">Total Omzet</p>
+                        <p class="mt-1 text-xl font-bold text-slate-900">
+                            Rp {{ number_format($totalRevenue, 0, ',', '.') }}
+                        </p>
+                    </div>
+                    <div class="rounded-lg border border-slate-200 bg-slate-50 p-4">
+                        <p class="text-sm font-medium text-slate-500">Jumlah Transaksi</p>
+                        <p class="mt-1 text-xl font-bold text-slate-900">
+                            {{ $filteredCount }}
+                        </p>
                     </div>
                 </div>
 

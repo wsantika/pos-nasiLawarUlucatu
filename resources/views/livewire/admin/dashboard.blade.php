@@ -4,13 +4,53 @@
 
     <div class="p-6">
         <main class="lg:pl-64 space-y-6">
-            <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                 <div>
-                    <h1 class="text-2xl font-bold text-slate-900">Dasbor & Laporan</h1>
+                    <h1 class="text-2xl font-bold text-slate-900">Dashboard & Laporan</h1>
                     <p class="text-sm text-slate-500">
-                        Rekapitulasi omzet, pantauan stok, dan laporan menu terlaris hari ini.
+                        Rekapitulasi omzet harian, omzet bulanan, stok, dan laporan menu terlaris.
                     </p>
                 </div>
+
+                <form wire:submit.prevent="applyReportFilter" class="flex flex-col gap-3 lg:flex-row lg:items-end">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">
+                            Tanggal Laporan Harian
+                        </label>
+
+                        <input type="date" wire:model="dailyDateInput"
+                            class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-slate-900 focus:ring-2 focus:ring-slate-900">
+
+                        @error('dailyDateInput')
+                            <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">
+                            Bulan Laporan
+                        </label>
+
+                        <input type="month" wire:model="monthInput"
+                            class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-slate-900 focus:ring-2 focus:ring-slate-900">
+
+                        @error('monthInput')
+                            <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <button type="submit" wire:loading.attr="disabled" wire:target="applyReportFilter"
+                        class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 disabled:opacity-60">
+                        <span wire:loading.remove wire:target="applyReportFilter">Terapkan</span>
+                        <span wire:loading wire:target="applyReportFilter">Memuat...</span>
+                    </button>
+
+                    <button type="button" wire:click="resetReportFilter" wire:loading.attr="disabled"
+                        wire:target="resetReportFilter"
+                        class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-60">
+                        Reset
+                    </button>
+                </form>
             </div>
 
             @if ($lowStockProductsCount > 0)
@@ -34,35 +74,14 @@
                 </div>
             @endif
 
-            <div class="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
+            <div class="grid grid-cols-1 gap-5 md:grid-cols-3">
                 <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
                     <p class="text-sm font-medium text-slate-500">Omzet Harian</p>
                     <h2 class="mt-2 text-2xl font-bold text-slate-900">
-                        Rp {{ number_format($todayRevenue, 0, ',', '.') }}
+                        Rp {{ number_format($dailyRevenue, 0, ',', '.') }}
                     </h2>
                     <p class="mt-1 text-xs text-slate-500">
-                        Berdasarkan transaksi sukses hari ini
-                    </p>
-                </div>
-
-                <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-                    <p class="text-sm font-medium text-slate-500">Transaksi Harian</p>
-                    <h2 class="mt-2 text-2xl font-bold text-slate-900">
-                        {{ $todayTransactions }}
-                    </h2>
-                    <p class="mt-1 text-xs text-slate-500">
-                        Rata-rata Rp {{ number_format($averageTransaction, 0, ',', '.') }} per transaksi
-                    </p>
-                </div>
-
-
-                <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-                    <p class="text-sm font-medium text-slate-500">Porsi Terjual</p>
-                    <h2 class="mt-2 text-2xl font-bold text-slate-900">
-                        {{ $totalSoldToday }}
-                    </h2>
-                    <p class="mt-1 text-xs text-slate-500">
-                        Total item terjual hari ini
+                        {{ \Carbon\Carbon::parse($selectedDailyDate)->format('d M Y') }}
                     </p>
                 </div>
 
@@ -72,7 +91,17 @@
                         Rp {{ number_format($monthlyRevenue, 0, ',', '.') }}
                     </h2>
                     <p class="mt-1 text-xs text-slate-500">
-                        Berdasarkan hasil transaksi sukses bulan ini
+                        {{ $selectedMonthLabel }}
+                    </p>
+                </div>
+
+                <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                    <p class="text-sm font-medium text-slate-500">Transaksi Bulanan</p>
+                    <h2 class="mt-2 text-2xl font-bold text-slate-900">
+                        {{ $monthlyTransactionCount }}
+                    </h2>
+                    <p class="mt-1 text-xs text-slate-500">
+                        Rata-rata Rp {{ number_format($monthlyAverageTransaction, 0, ',', '.') }}
                     </p>
                 </div>
             </div>
@@ -82,7 +111,8 @@
                     <div class="border-b border-slate-200 p-5">
                         <h2 class="text-lg font-bold text-slate-900">Laporan Menu Terlaris - Pareto</h2>
                         <p class="text-sm text-slate-500">
-                            Urutan menu berdasarkan jumlah porsi terjual dan kontribusi kumulatif hari ini.
+                            Urutan menu berdasarkan jumlah porsi terjual pada tanggal
+                            {{ \Carbon\Carbon::parse($selectedDailyDate)->format('d M Y') }}.
                         </p>
                     </div>
 
@@ -162,7 +192,7 @@
                                 @empty
                                     <tr>
                                         <td colspan="6" class="px-5 py-8 text-center text-sm text-slate-500">
-                                            Belum ada data penjualan hari ini.
+                                            Belum ada data penjualan pada tanggal ini.
                                         </td>
                                     </tr>
                                 @endforelse
@@ -175,7 +205,8 @@
                     <div class="border-b border-slate-200 p-5">
                         <h2 class="text-lg font-bold text-slate-900">Transaksi Terbaru</h2>
                         <p class="text-sm text-slate-500">
-                            Transaksi sukses hari ini.
+                            Transaksi sukses pada tanggal
+                            {{ \Carbon\Carbon::parse($selectedDailyDate)->format('d M Y') }}.
                         </p>
                     </div>
 
@@ -206,7 +237,7 @@
                             </div>
                         @empty
                             <div class="p-8 text-center text-sm text-slate-500">
-                                Belum ada transaksi hari ini.
+                                Belum ada transaksi pada tanggal ini.
                             </div>
                         @endforelse
                     </div>

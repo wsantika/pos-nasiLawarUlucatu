@@ -26,6 +26,21 @@ class TransactionIndex extends Component
         $this->resetPage();
     }
 
+    public function updatingDateFrom()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingDateTo()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingPaymentMethodFilter()
+    {
+        $this->resetPage();
+    }
+
     public function viewDetail($id)
     {
         $this->selectedTransaction = Transaction::with(['details.product', 'user'])->find($id);
@@ -36,6 +51,11 @@ class TransactionIndex extends Component
     {
         $this->showDetailModal = false;
         $this->selectedTransaction = null;
+    }
+
+    public function resetFilter(): void
+    {
+        $this->reset(['search', 'dateFrom', 'dateTo', 'paymentMethodFilter']);
     }
 
     public function render()
@@ -55,19 +75,14 @@ class TransactionIndex extends Component
             $query->where('payment_method', $this->paymentMethodFilter);
         }
 
-        $transactions = $query->latest()->paginate(10);
-
-        $todayTotal = Transaction::whereDate('created_at', today())->sum('total');
-        $monthTotal = Transaction::whereMonth('created_at', now()->month)
-            ->whereYear('created_at', now()->year)
-            ->sum('total');
-        $transactionCount = Transaction::count();
+        $transactions = (clone $query)->latest()->paginate(10);
+        $totalRevenue = (clone $query)->sum('total');
+        $filteredCount = (clone $query)->count();
 
         return view('livewire.admin.transaction', [
             'transactions' => $transactions,
-            'todayTotal' => $todayTotal,
-            'monthTotal' => $monthTotal,
-            'transactionCount' => $transactionCount
+            'totalRevenue' => $totalRevenue,
+            'filteredCount' => $filteredCount,
         ]);
     }
 }
