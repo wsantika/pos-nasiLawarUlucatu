@@ -21,6 +21,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/products', ProductIndex::class)->name('admin.product');
     Route::get('/category', CategoryIndex::class)->name('admin.category');
     Route::get('/transaction', TransactionIndex::class)->name('admin.transaction');
+    Route::get('/dashboard/report/pdf/daily', [App\Http\Controllers\Admin\DashboardReportController::class, 'daily'])->name('admin.dashboard.pdf.daily');
+    Route::get('/dashboard/report/pdf/monthly', [App\Http\Controllers\Admin\DashboardReportController::class, 'monthly'])->name('admin.dashboard.pdf.monthly');
 });
 
 // Route khusus Kasir (Admin juga boleh akses)
