@@ -6,6 +6,18 @@
 
         <!-- Content -->
         <main class="p-6">
+            @if (session()->has('success'))
+                <div class="mb-6 rounded-xl border border-green-200 bg-green-50 p-4 text-green-800 font-medium">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @if (session()->has('error'))
+                <div class="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-red-800 font-medium">
+                    {{ session('error') }}
+                </div>
+            @endif
+
             <div class="bg-white rounded-lg border border-slate-200 card-shadow">
                 <!-- Header -->
                 <div class="p-6 border-b border-slate-200">
@@ -40,6 +52,13 @@
                                 <option value="cash">Cash</option>
                                 <option value="transfer">Transfer</option>
                                 <option value="qris">QRIS</option>
+                            </select>
+                            <select wire:model.live="paymentStatusFilter"
+                                class="px-4 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent bg-white">
+                                <option value="">Semua Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="success">Success</option>
+                                <option value="failed">Failed</option>
                             </select>
                             <button type="button" wire:click="resetFilter"
                                 class="px-4 py-2.5 text-sm font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors">
@@ -92,6 +111,10 @@
                                 </th>
                                 <th
                                     class="px-6 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                                    Status
+                                </th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
                                     Aksi
                                 </th>
                             </tr>
@@ -127,23 +150,45 @@
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <button wire:click="viewDetail({{ $transaction->id }})"
-                                            class="inline-flex items-center px-3 py-1.5 border border-slate-300 text-xs font-medium rounded-lg text-slate-700 bg-white hover:bg-slate-50 transition-colors">
-                                            <svg class="w-3 h-3 mr-1.5" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
-                                                </path>
-                                            </svg>
-                                            Detail
-                                        </button>
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {{ $transaction->payment_status === 'success' ? 'bg-green-50 text-green-700 border-green-200' : ($transaction->payment_status === 'pending' ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-red-50 text-red-700 border-red-200') }}">
+                                            {{ ucfirst($transaction->payment_status) }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex flex-wrap items-center gap-2">
+                                            <button wire:click="viewDetail({{ $transaction->id }})"
+                                                class="inline-flex items-center px-3 py-1.5 border border-slate-300 text-xs font-medium rounded-lg text-slate-700 bg-white hover:bg-slate-50 transition-colors">
+                                                <svg class="w-3 h-3 mr-1.5" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                                    </path>
+                                                </svg>
+                                                Detail
+                                            </button>
+
+                                            @if ($transaction->payment_status === 'pending')
+                                                <button wire:click="confirmPayment({{ $transaction->id }})"
+                                                    wire:confirm="Pastikan pembayaran sudah masuk. Konfirmasi transaksi ini?"
+                                                    class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-lg text-white bg-slate-900 hover:bg-slate-800 transition-colors">
+                                                    Konfirmasi
+                                                </button>
+
+                                                <button wire:click="cancelPayment({{ $transaction->id }})"
+                                                    wire:confirm="Batalkan transaksi pending ini?"
+                                                    class="inline-flex items-center px-3 py-1.5 border border-red-200 text-xs font-medium rounded-lg text-red-700 bg-white hover:bg-red-50 transition-colors">
+                                                    Batalkan
+                                                </button>
+                                            @endif
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="px-6 py-12 text-center">
+                                    <td colspan="7" class="px-6 py-12 text-center">
                                         <svg class="w-16 h-16 mx-auto text-slate-300 mb-4" fill="none" stroke="currentColor"
                                             viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -221,6 +266,12 @@
                                     {{ ucfirst($selectedTransaction->payment_method) }}
                                 </p>
                             </div>
+                            <div>
+                                <p class="text-sm text-slate-500">Status Pembayaran</p>
+                                <p class="font-semibold text-slate-900">
+                                    {{ ucfirst($selectedTransaction->payment_status) }}
+                                </p>
+                            </div>
                         </div>
 
                         <!-- Items -->
@@ -286,9 +337,23 @@
                     </div>
 
                     <!-- Footer -->
-                    <div class="bg-slate-50 px-6 py-4 flex justify-end border-t border-slate-200">
+                    <div class="bg-slate-50 px-6 py-4 flex flex-wrap justify-end gap-3 border-t border-slate-200">
+                        @if ($selectedTransaction->payment_status === 'pending')
+                            <button type="button" wire:click="confirmPayment({{ $selectedTransaction->id }})"
+                                wire:confirm="Pastikan pembayaran sudah masuk. Konfirmasi transaksi ini?"
+                                class="px-4 py-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-colors font-medium">
+                                Konfirmasi Pembayaran
+                            </button>
+
+                            <button type="button" wire:click="cancelPayment({{ $selectedTransaction->id }})"
+                                wire:confirm="Batalkan transaksi pending ini?"
+                                class="px-4 py-2.5 border border-red-200 text-red-700 rounded-lg hover:bg-red-50 transition-colors font-medium">
+                                Batalkan Pembayaran
+                            </button>
+                        @endif
+
                         <button type="button" wire:click="closeDetailModal"
-                            class="px-4 py-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-colors font-medium">
+                            class="px-4 py-2.5 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-100 transition-colors font-medium">
                             Tutup
                         </button>
                     </div>

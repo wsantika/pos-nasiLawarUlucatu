@@ -4,6 +4,7 @@ namespace App\Livewire\Admin;
 
 use Livewire\Component;
 use App\Models\Transaction;
+use App\Services\TransactionPaymentService;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\WithPagination;
@@ -18,6 +19,7 @@ class TransactionIndex extends Component
     public $dateFrom = '';
     public $dateTo = '';
     public $paymentMethodFilter = '';
+    public $paymentStatusFilter = '';
     public $selectedTransaction;
     public $showDetailModal = false;
 
@@ -41,6 +43,11 @@ class TransactionIndex extends Component
         $this->resetPage();
     }
 
+    public function updatingPaymentStatusFilter()
+    {
+        $this->resetPage();
+    }
+
     public function viewDetail($id)
     {
         $this->selectedTransaction = Transaction::with(['details.product', 'user'])->find($id);
@@ -55,7 +62,39 @@ class TransactionIndex extends Component
 
     public function resetFilter(): void
     {
-        $this->reset(['search', 'dateFrom', 'dateTo', 'paymentMethodFilter']);
+        $this->reset(['search', 'dateFrom', 'dateTo', 'paymentMethodFilter', 'paymentStatusFilter']);
+    }
+
+    public function confirmPayment($id): void
+    {
+        try {
+            $transaction = Transaction::findOrFail($id);
+            app(TransactionPaymentService::class)->markAsSuccess($transaction);
+
+            session()->flash('success', 'Pembayaran berhasil dikonfirmasi.');
+
+            if ($this->selectedTransaction && $this->selectedTransaction->id === $transaction->id) {
+                $this->selectedTransaction = Transaction::with(['details.product', 'user'])->find($transaction->id);
+            }
+        } catch (\Exception $e) {
+            session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    public function cancelPayment($id): void
+    {
+        try {
+            $transaction = Transaction::findOrFail($id);
+            app(TransactionPaymentService::class)->markAsFailed($transaction);
+
+            session()->flash('success', 'Pembayaran pending berhasil dibatalkan.');
+
+            if ($this->selectedTransaction && $this->selectedTransaction->id === $transaction->id) {
+                $this->selectedTransaction = Transaction::with(['details.product', 'user'])->find($transaction->id);
+            }
+        } catch (\Exception $e) {
+            session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 
     public function render()
@@ -75,8 +114,12 @@ class TransactionIndex extends Component
             $query->where('payment_method', $this->paymentMethodFilter);
         }
 
+        if ($this->paymentStatusFilter) {
+            $query->where('payment_status', $this->paymentStatusFilter);
+        }
+
         $transactions = (clone $query)->latest()->paginate(10);
-        $totalRevenue = (clone $query)->sum('total');
+        $totalRevenue = (clone $query)->where('payment_status', 'success')->sum('total');
         $filteredCount = (clone $query)->count();
 
         return view('livewire.admin.transaction', [

@@ -514,52 +514,82 @@
                                 @enderror
                             </div>
 
-                            <div>
-                                <label for="paid" class="block text-sm font-medium text-slate-700 mb-2">
-                                    Jumlah Dibayar
-                                </label>
+                            @if ($paymentMethod === 'qris')
+                                <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 text-center">
+                                    <p class="text-sm font-semibold text-slate-900">Scan QRIS Toko</p>
+                                    <p class="mt-1 text-xs text-slate-500">
+                                        Customer wajib memasukkan nominal sesuai total pembayaran.
+                                    </p>
 
-                                <input
-                                    type="number"
-                                    id="paid"
-                                    wire:model.live="paid"
-                                    class="block w-full px-4 py-3 text-lg font-semibold border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent"
-                                    placeholder="0"
-                                >
+                                    <div class="mt-4 flex justify-center">
+                                        @if ($manualQrisImageUrl)
+                                            <img
+                                                src="{{ $manualQrisImageUrl }}"
+                                                alt="QRIS Manual"
+                                                class="h-56 w-56 rounded-lg border border-slate-200 bg-white object-contain p-2"
+                                            >
+                                        @else
+                                            <div class="flex h-56 w-56 items-center justify-center rounded-lg border-2 border-dashed border-slate-300 bg-white p-4 text-sm text-slate-500">
+                                                Gambar QRIS belum dikonfigurasi.
+                                            </div>
+                                        @endif
+                                    </div>
 
-                                @error('paid')
-                                    <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
-                                @enderror
-                            </div>
+                                    <div class="mt-4 rounded-lg bg-white p-3 border border-slate-200">
+                                        <p class="text-xs text-slate-500">Nominal yang harus dibayar</p>
+                                        <p class="text-2xl font-bold text-slate-900">
+                                            Rp {{ number_format($total, 0, ',', '.') }}
+                                        </p>
+                                    </div>
+                                </div>
+                            @else
+                                <div>
+                                    <label for="paid" class="block text-sm font-medium text-slate-700 mb-2">
+                                        Jumlah Dibayar
+                                    </label>
 
-                            <div class="grid grid-cols-4 gap-2">
-                                @foreach ([10000, 20000, 50000, 100000] as $amount)
-                                    <button
-                                        type="button"
-                                        wire:click="$set('paid', {{ $total + $amount }})"
-                                        class="px-3 py-2 text-sm border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors"
+                                    <input
+                                        type="number"
+                                        id="paid"
+                                        wire:model.live="paid"
+                                        class="block w-full px-4 py-3 text-lg font-semibold border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent"
+                                        placeholder="0"
                                     >
-                                        {{ number_format($amount, 0, ',', '.') }}
-                                    </button>
-                                @endforeach
-                            </div>
 
-                            @if ($change > 0)
-                                <div class="bg-green-50 p-4 rounded-lg border border-green-200">
-                                    <p class="text-sm text-green-700 mb-1">Kembalian</p>
-
-                                    <p class="text-2xl font-bold text-green-900">
-                                        Rp {{ number_format($change, 0, ',', '.') }}
-                                    </p>
+                                    @error('paid')
+                                        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                                    @enderror
                                 </div>
-                            @endif
 
-                            @if ($paid > 0 && $paid < $total)
-                                <div class="bg-red-50 p-3 rounded-lg border border-red-200">
-                                    <p class="text-sm text-red-700">
-                                        Jumlah pembayaran kurang dari total
-                                    </p>
+                                <div class="grid grid-cols-4 gap-2">
+                                    @foreach ([10000, 20000, 50000, 100000] as $amount)
+                                        <button
+                                            type="button"
+                                            wire:click="$set('paid', {{ $total + $amount }})"
+                                            class="px-3 py-2 text-sm border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors"
+                                        >
+                                            {{ number_format($amount, 0, ',', '.') }}
+                                        </button>
+                                    @endforeach
                                 </div>
+
+                                @if ($change > 0)
+                                    <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                                        <p class="text-sm text-green-700 mb-1">Kembalian</p>
+
+                                        <p class="text-2xl font-bold text-green-900">
+                                            Rp {{ number_format($change, 0, ',', '.') }}
+                                        </p>
+                                    </div>
+                                @endif
+
+                                @if ($paid > 0 && $paid < $total)
+                                    <div class="bg-red-50 p-3 rounded-lg border border-red-200">
+                                        <p class="text-sm text-red-700">
+                                            Jumlah pembayaran kurang dari total
+                                        </p>
+                                    </div>
+                                @endif
                             @endif
                         </div>
 
@@ -574,13 +604,75 @@
 
                             <button
                                 type="submit"
-                                class="px-6 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-colors font-semibold {{ $paid < $total ? 'opacity-50 cursor-not-allowed' : '' }}"
-                                {{ $paid < $total ? 'disabled' : '' }}
+                                class="px-6 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-colors font-semibold {{ $paymentMethod !== 'qris' && $paid < $total ? 'opacity-50 cursor-not-allowed' : '' }}"
+                                {{ $paymentMethod !== 'qris' && $paid < $total ? 'disabled' : '' }}
                             >
-                                Proses Pembayaran
+                                {{ $paymentMethod === 'qris' ? 'Buat Pembayaran QRIS' : 'Proses Pembayaran' }}
                             </button>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    <!-- QRIS Pending Modal -->
+    @if ($showQrisPendingModal)
+        <div class="fixed inset-0 z-50 overflow-y-auto">
+            <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+                <div class="fixed inset-0 transition-opacity bg-slate-900 bg-opacity-50"></div>
+
+                <div class="inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full">
+                    <div class="bg-white px-6 py-6 text-center">
+                        <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                                ></path>
+                            </svg>
+                        </div>
+
+                        <h3 class="text-2xl font-bold text-slate-900 mb-2">
+                            Menunggu Pembayaran QRIS
+                        </h3>
+
+                        <p class="text-slate-500 mb-4">
+                            Cek notifikasi merchant/bank sebelum mengonfirmasi pembayaran.
+                        </p>
+
+                        <div class="bg-slate-50 p-4 rounded-lg mb-6 border border-slate-200">
+                            <p class="text-sm text-slate-500 mb-1">No. Invoice</p>
+                            <p class="text-xl font-bold text-slate-900">{{ $pendingQrisInvoice }}</p>
+                        </div>
+
+                        <div class="space-y-3">
+                            <button
+                                wire:click="confirmPendingQrisPayment"
+                                wire:confirm="Pastikan pembayaran QRIS sudah masuk. Konfirmasi pembayaran ini?"
+                                class="w-full bg-slate-900 text-white py-3 rounded-lg hover:bg-slate-800 transition-colors font-semibold"
+                            >
+                                Konfirmasi Pembayaran
+                            </button>
+
+                            <button
+                                wire:click="cancelPendingQrisPayment"
+                                wire:confirm="Batalkan transaksi QRIS pending ini?"
+                                class="w-full border border-red-200 text-red-700 py-2 rounded-lg hover:bg-red-50 transition-colors font-semibold"
+                            >
+                                Batalkan Pembayaran
+                            </button>
+
+                            <button
+                                wire:click="closeQrisPendingModal"
+                                class="w-full border border-slate-300 text-slate-700 py-2 rounded-lg hover:bg-slate-50 transition-colors"
+                            >
+                                Tutup
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
