@@ -5,28 +5,55 @@
     <title>Laporan {{ $jenis }} - Nasi Lawar Ulucatu</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'DejaVu Sans', sans-serif; font-size: 12px; color: #1a1a1a; }
+        body {
+            background: #f8fafc;
+            color: #0f172a;
+            font-family: 'DejaVu Sans', sans-serif;
+            font-size: 12px;
+        }
+
+        .page {
+            background: #ffffff;
+            margin: 18px;
+            padding: 22px;
+        }
 
         .header {
-            background-color: #b45309;
-            color: white;
-            padding: 20px 24px;
-            margin-bottom: 20px;
+            background: #0f172a;
+            border-radius: 14px;
+            color: #ffffff;
+            padding: 22px 24px;
+            margin-bottom: 22px;
         }
-        .header h1 { font-size: 20px; font-weight: bold; }
-        .header p  { font-size: 11px; margin-top: 4px; opacity: 0.9; }
-
-        .section { margin: 0 24px 18px 24px; }
-        .section-title {
-            font-size: 13px;
+        .header h1 { font-size: 20px; font-weight: bold; letter-spacing: -0.2px; }
+        .header p  { color: #cbd5e1; font-size: 11px; margin-top: 5px; }
+        .header .badge {
+            background: #ecfdf5;
+            border-radius: 999px;
+            color: #047857;
+            display: inline-block;
+            font-size: 10px;
             font-weight: bold;
-            color: #92400e;
-            border-bottom: 2px solid #f59e0b;
-            padding-bottom: 4px;
             margin-bottom: 10px;
+            padding: 4px 10px;
+            text-transform: uppercase;
         }
 
-        /* Ringkasan cards */
+        .section { margin-bottom: 20px; }
+        .section-title {
+            border-bottom: 1px solid #e2e8f0;
+            color: #0f172a;
+            font-weight: bold;
+            font-size: 13px;
+            letter-spacing: -0.1px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+        }
+        .section-title span {
+            border-left: 4px solid #10b981;
+            padding-left: 8px;
+        }
+
         .summary-grid {
             display: table;
             width: 100%;
@@ -34,53 +61,76 @@
         }
         .summary-row { display: table-row; }
         .summary-card {
-            display: table-cell;
-            width: 25%;
-            background: #fffbeb;
-            border: 1px solid #fde68a;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
             border-radius: 6px;
+            display: table-cell;
             padding: 10px 12px;
             text-align: center;
+            width: 25%;
         }
-        .summary-card .label { font-size: 10px; color: #78716c; margin-bottom: 4px; }
-        .summary-card .value { font-size: 14px; font-weight: bold; color: #92400e; }
+        .summary-card .label { color: #64748b; font-size: 10px; margin-bottom: 5px; }
+        .summary-card .value { color: #0f172a; font-size: 14px; font-weight: bold; }
 
-        /* Tabel */
         table { width: 100%; border-collapse: collapse; }
         th {
-            background-color: #92400e;
-            color: white;
-            padding: 7px 10px;
-            text-align: left;
+            background-color: #f1f5f9;
+            border-bottom: 1px solid #cbd5e1;
+            color: #334155;
             font-size: 11px;
+            padding: 8px 10px;
+            text-align: left;
         }
-        td { padding: 6px 10px; font-size: 11px; border-bottom: 1px solid #e5e7eb; }
-        tr:nth-child(even) td { background-color: #fffbeb; }
+        td { border-bottom: 1px solid #e2e8f0; font-size: 11px; padding: 8px 10px; }
+        tr:nth-child(even) td { background-color: #f8fafc; }
 
-        /* Stok menipis */
-        .stok-warning { color: #dc2626; font-weight: bold; }
+        .muted-message {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            color: #64748b;
+            font-style: italic;
+            padding: 12px;
+        }
+        .safe-message {
+            background: #ecfdf5;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            color: #047857;
+            padding: 12px;
+        }
+        .stock-pill {
+            background: #fef2f2;
+            border-radius: 999px;
+            color: #b91c1c;
+            display: inline-block;
+            font-weight: bold;
+            padding: 3px 8px;
+        }
 
         .footer {
-            margin: 20px 24px 0 24px;
-            padding-top: 10px;
-            border-top: 1px solid #d1d5db;
+            border-top: 1px solid #e2e8f0;
+            color: #94a3b8;
             font-size: 10px;
-            color: #9ca3af;
+            margin-top: 24px;
+            padding-top: 12px;
             text-align: right;
         }
     </style>
 </head>
 <body>
 
-{{-- HEADER --}}
-<div class="header">
-    <h1>Laporan {{ $jenis }} — Nasi Lawar Ulucatu</h1>
-    <p>Periode: {{ $periode }}</p>
-</div>
+<div class="page">
+    {{-- HEADER --}}
+    <div class="header">
+        <div class="badge">POS Report</div>
+        <h1>Laporan {{ $jenis }} - Nasi Lawar Ulucatu</h1>
+        <p>Periode {{ $periode }} • Ringkasan transaksi, menu terlaris, dan pantauan stok.</p>
+    </div>
 
-{{-- RINGKASAN --}}
-<div class="section">
-    <div class="section-title">Ringkasan Omzet & Transaksi</div>
+    {{-- RINGKASAN --}}
+    <div class="section">
+    <div class="section-title"><span>Ringkasan Omzet & Transaksi</span></div>
     <table class="summary-grid">
         <tr class="summary-row">
             <td class="summary-card">
@@ -101,11 +151,11 @@
             </td>
         </tr>
     </table>
-</div>
+    </div>
 
-{{-- MENU TERLARIS --}}
-<div class="section">
-    <div class="section-title">Menu Terlaris</div>
+    {{-- MENU TERLARIS --}}
+    <div class="section">
+    <div class="section-title"><span>Menu Terlaris</span></div>
     @if(count($menuSales) > 0)
     <table>
         <thead>
@@ -123,15 +173,16 @@
         <td>{{ $menu->total_qty }} porsi</td>
     </tr>
     @endforeach
+        </tbody>
     </table>
     @else
-        <p style="color:#9ca3af; font-style:italic;">Tidak ada data menu pada periode ini.</p>
+        <p class="muted-message">Tidak ada data menu pada periode ini.</p>
     @endif
-</div>
+    </div>
 
-{{-- STOK MENIPIS --}}
-<div class="section">
-    <div class="section-title">Pantauan Stok / Sisa Porsi Menipis</div>
+    {{-- STOK MENIPIS --}}
+    <div class="section">
+    <div class="section-title"><span>Pantauan Stok / Sisa Porsi Menipis</span></div>
     @if($stokMenipis->count() > 0)
     <table>
         <thead>
@@ -146,19 +197,20 @@
             <tr>
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $produk->name }}</td>
-                <td class="stok-warning">{{ $produk->stock }} porsi</td>
+                <td><span class="stock-pill">{{ $produk->stock }} porsi</span></td>
             </tr>
             @endforeach
         </tbody>
     </table>
     @else
-        <p style="color:#16a34a;">✓ Semua stok dalam kondisi aman.</p>
+        <p class="safe-message">Semua stok dalam kondisi aman.</p>
     @endif
-</div>
+    </div>
 
-{{-- FOOTER --}}
-<div class="footer">
-    Dicetak pada: {{ $tanggalCetak }} &nbsp;|&nbsp; Nasi Lawar Ulucatu — Sistem POS
+    {{-- FOOTER --}}
+    <div class="footer">
+        Dicetak pada: {{ $tanggalCetak }} &nbsp;|&nbsp; Nasi Lawar Ulucatu - Sistem POS
+    </div>
 </div>
 
 </body>

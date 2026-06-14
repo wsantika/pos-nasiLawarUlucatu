@@ -11,86 +11,74 @@
                         Rekapitulasi omzet harian, omzet bulanan, stok, dan laporan menu terlaris.
                     </p>
                 </div>
-                {{-- Tombol Export PDF --}}
-                <div class="flex flex-wrap gap-3 mb-6">
-                    {{-- Export Harian --}}
-                    <form method="GET" action="{{ route('admin.dashboard.pdf.daily') }}" target="_blank" class="flex items-center gap-2">
-                        <input type="date" name="date" value="{{ date('Y-m-d') }}"
-                            class="border border-amber-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
-                        <button type="submit"
-                                class="flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                            </svg>
-                            Export PDF Harian
+                <div class="flex flex-col gap-3">
+                    <form wire:submit.prevent="applyReportFilter" class="flex flex-col gap-3 lg:flex-row lg:items-end">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">
+                                Tanggal Laporan Harian
+                            </label>
+
+                            <input type="date" wire:model="dailyDateInput"
+                                class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-slate-900 focus:ring-2 focus:ring-slate-900">
+
+                            @error('dailyDateInput')
+                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">
+                                Bulan Laporan
+                            </label>
+
+                            <input type="month" wire:model="monthInput"
+                                class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-slate-900 focus:ring-2 focus:ring-slate-900">
+
+                            @error('monthInput')
+                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <button type="submit" wire:loading.attr="disabled" wire:target="applyReportFilter"
+                            class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 disabled:opacity-60">
+                            <span wire:loading.remove wire:target="applyReportFilter">Terapkan</span>
+                            <span wire:loading wire:target="applyReportFilter">Memuat...</span>
+                        </button>
+
+                        <button type="button" wire:click="resetReportFilter" wire:loading.attr="disabled"
+                            wire:target="resetReportFilter"
+                            class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-60">
+                            Reset
                         </button>
                     </form>
 
-                    {{-- Export Bulanan --}}
-                    <form method="GET" action="{{ route('admin.dashboard.pdf.monthly') }}" target="_blank" class="flex items-center gap-2">
-                        <select name="month" class="border border-amber-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
-                            @for($m = 1; $m <= 12; $m++)
-                                <option value="{{ $m }}" {{ $m == date('n') ? 'selected' : '' }}>
-                                    {{ \Carbon\Carbon::create()->month($m)->translatedFormat('F') }}
-                                </option>
-                            @endfor
-                        </select>
-                        <select name="year" class="border border-amber-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
-                            @for($y = date('Y'); $y >= date('Y') - 2; $y--)
-                                <option value="{{ $y }}">{{ $y }}</option>
-                            @endfor
-                        </select>
-                        <button type="submit"
-                                class="flex items-center gap-2 bg-amber-800 hover:bg-amber-900 text-white px-4 py-2 rounded-lg text-sm font-medium transition">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                            </svg>
-                            Export PDF Bulanan
-                        </button>
-                    </form>
+                    <div class="flex flex-col gap-3 sm:flex-row sm:justify-end">
+                        <form method="GET" action="{{ route('admin.dashboard.pdf.daily') }}" target="_blank">
+                            <input type="hidden" name="date" value="{{ $selectedDailyDate }}">
+                            <button type="submit"
+                                class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 sm:w-auto">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                Export PDF Harian
+                            </button>
+                        </form>
+
+                        <form method="GET" action="{{ route('admin.dashboard.pdf.monthly') }}" target="_blank">
+                            <input type="hidden" name="month" value="{{ (int) substr($selectedMonthPeriod, 5, 2) }}">
+                            <input type="hidden" name="year" value="{{ substr($selectedMonthPeriod, 0, 4) }}">
+                            <button type="submit"
+                                class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 sm:w-auto">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                Export PDF Bulanan
+                            </button>
+                        </form>
+                    </div>
                 </div>
-
-                <form wire:submit.prevent="applyReportFilter" class="flex flex-col gap-3 lg:flex-row lg:items-end">
-                    <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1">
-                            Tanggal Laporan Harian
-                        </label>
-
-                        <input type="date" wire:model="dailyDateInput"
-                            class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-slate-900 focus:ring-2 focus:ring-slate-900">
-
-                        @error('dailyDateInput')
-                            <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1">
-                            Bulan Laporan
-                        </label>
-
-                        <input type="month" wire:model="monthInput"
-                            class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-slate-900 focus:ring-2 focus:ring-slate-900">
-
-                        @error('monthInput')
-                            <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <button type="submit" wire:loading.attr="disabled" wire:target="applyReportFilter"
-                        class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 disabled:opacity-60">
-                        <span wire:loading.remove wire:target="applyReportFilter">Terapkan</span>
-                        <span wire:loading wire:target="applyReportFilter">Memuat...</span>
-                    </button>
-
-                    <button type="button" wire:click="resetReportFilter" wire:loading.attr="disabled"
-                        wire:target="resetReportFilter"
-                        class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-60">
-                        Reset
-                    </button>
-                </form>
             </div>
 
             @if ($lowStockProductsCount > 0)
