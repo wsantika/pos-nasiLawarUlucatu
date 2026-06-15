@@ -8,9 +8,11 @@ use App\Models\Category;
 use App\Models\Transaction;
 use App\Models\TransactionDetail;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use App\Services\ThermalPrinterService;
+use App\Services\TransactionPaymentService;
 
 #[Layout('components.layouts.app')]
 #[Title('POS Kasir - POS Nasi Lawar Ulucatu')]
@@ -32,13 +34,33 @@ class PosIndex extends Component
     public $change = 0;
     public $showPaymentModal = false;
     public $showSuccessModal = false;
+    public $showQrisPendingModal = false;
     public $lastInvoice = '';
+    public $pendingQrisTransactionId = null;
+    public $pendingQrisInvoice = '';
+    public $manualQrisImageUrl = null;
 
     public function mount()
     {
         $this->categories = Category::all();
+        $this->manualQrisImageUrl = $this->resolveManualQrisImageUrl();
         $this->loadProducts();
         $this->calculateTotal();
+    }
+
+    private function resolveManualQrisImageUrl(): ?string
+    {
+        $path = config('services.qris_manual.image_path');
+
+        if (!$path) {
+            return null;
+        }
+
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://') || str_starts_with($path, '/')) {
+            return $path;
+        }
+
+        return Storage::url($path);
     }
 
     public function loadProducts()
@@ -193,10 +215,11 @@ class PosIndex extends Component
 
     public function processPayment()
     {
+        $isQris = $this->paymentMethod === 'qris';
         $paid = (float) $this->paid;
         $total = (float) $this->total;
 
-        if ($paid < $total) {
+        if (!$isQris && $paid < $total) {
             session()->flash('error', 'Jumlah pembayaran kurang dari total transaksi.');
             return;
         }
@@ -207,7 +230,7 @@ class PosIndex extends Component
                 ? 'required|string|max:20'
                 : 'nullable|string|max:20',
             'paymentMethod' => 'required|in:cash,transfer,qris',
-            'paid' => 'required|numeric|min:' . max(0, (float) $this->total),
+            'paid' => $isQris ? 'nullable|numeric|min:0' : 'required|numeric|min:' . max(0, (float) $this->total),
             'discount' => 'nullable|numeric|min:0',
             'tax' => 'nullable|numeric|min:0',
         ], [
@@ -237,12 +260,12 @@ class PosIndex extends Component
                 'discount' => (float) $this->discount,
                 'tax' => (float) $this->tax,
                 'total' => $total,
-                'paid' => $paid,
-                'change' => (float) $this->change,
+                'paid' => $isQris ? null : $paid,
+                'change' => $isQris ? 0 : (float) $this->change,
                 'payment_method' => $this->paymentMethod,
                 'order_type' => $this->orderType,
                 'table_number' => $this->orderType === 'dine-in' ? $this->tableNumber : null,
-                'payment_status' => 'success',
+                'payment_status' => $isQris ? 'pending' : 'success',
             ]);
 
             foreach ($this->cart as $item) {
@@ -267,10 +290,24 @@ class PosIndex extends Component
                     'subtotal' => $item['subtotal'],
                 ]);
 
-                $product->decrement('stock', $item['quantity']);
+                if (!$isQris) {
+                    $product->decrement('stock', $item['quantity']);
+                }
             }
 
             DB::commit();
+
+            if ($isQris) {
+                $this->pendingQrisTransactionId = $transaction->id;
+                $this->pendingQrisInvoice = $transaction->invoice_number;
+                $this->lastInvoice = $transaction->invoice_number;
+                $this->showPaymentModal = false;
+                $this->showQrisPendingModal = true;
+
+                $this->resetTransaction();
+
+                return;
+            }
 
             $transaction->load(['details.product', 'user']);
 
@@ -297,6 +334,60 @@ class PosIndex extends Component
         }
     }
 
+    public function confirmPendingQrisPayment()
+    {
+        if (!$this->pendingQrisTransactionId) {
+            session()->flash('error', 'Tidak ada transaksi QRIS pending yang dipilih.');
+            return;
+        }
+
+        try {
+            $transaction = Transaction::findOrFail($this->pendingQrisTransactionId);
+            $transaction = app(TransactionPaymentService::class)->markAsSuccess($transaction);
+
+            try {
+                app(ThermalPrinterService::class)->printCustomerReceipt($transaction);
+                app(ThermalPrinterService::class)->printKitchenTicket($transaction);
+            } catch (\Throwable $printError) {
+                report($printError);
+
+                session()->flash(
+                    'error',
+                    'Pembayaran berhasil, tetapi struk gagal dicetak: ' . $printError->getMessage()
+                );
+            }
+
+            $this->lastInvoice = $transaction->invoice_number;
+            $this->showQrisPendingModal = false;
+            $this->showSuccessModal = true;
+            $this->pendingQrisTransactionId = null;
+            $this->pendingQrisInvoice = '';
+            $this->loadProducts();
+        } catch (\Exception $e) {
+            session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    public function cancelPendingQrisPayment()
+    {
+        if (!$this->pendingQrisTransactionId) {
+            session()->flash('error', 'Tidak ada transaksi QRIS pending yang dipilih.');
+            return;
+        }
+
+        try {
+            $transaction = Transaction::findOrFail($this->pendingQrisTransactionId);
+            app(TransactionPaymentService::class)->markAsFailed($transaction);
+
+            $this->showQrisPendingModal = false;
+            $this->pendingQrisTransactionId = null;
+            $this->pendingQrisInvoice = '';
+            $this->loadProducts();
+        } catch (\Exception $e) {
+            session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
     public function resetTransaction()
     {
         $this->cart = [];
@@ -315,6 +406,11 @@ class PosIndex extends Component
     public function closeSuccessModal()
     {
         $this->showSuccessModal = false;
+    }
+
+    public function closeQrisPendingModal()
+    {
+        $this->showQrisPendingModal = false;
     }
 
     public function closePaymentModal()
@@ -337,7 +433,10 @@ class PosIndex extends Component
             'change' => $this->change,
             'showPaymentModal' => $this->showPaymentModal,
             'showSuccessModal' => $this->showSuccessModal,
+            'showQrisPendingModal' => $this->showQrisPendingModal,
             'lastInvoice' => $this->lastInvoice,
+            'pendingQrisInvoice' => $this->pendingQrisInvoice,
+            'manualQrisImageUrl' => $this->manualQrisImageUrl,
             'table_number' => $this->orderType === 'dine-in' ? $this->tableNumber : null,
             'payment_status' => 'success',
         ]);

@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'qris_manual' => [
+        'image_path' => env('QRIS_MANUAL_IMAGE_PATH'),
+    ],
+
 ];
