@@ -1,6 +1,28 @@
 # POS Nasi Lawar Ulucatu
 
-## Kontribusi Anggota Kelompok
+POS Nasi Lawar Ulucatu adalah aplikasi **Point of Sale (POS) berbasis web** yang dikembangkan untuk mendukung operasional kasir, pengelolaan produk, pengelolaan kategori, pencatatan transaksi, pembayaran, pencetakan struk thermal, kitchen ticket, dan laporan penjualan.
+
+Project ini dibuat sebagai **Minimum Viable Product (MVP)** untuk Ujian Akhir Semester (UAS) mata kuliah **Rekayasa Perangkat Lunak Tahun Akademik 2025/2026**.
+
+---
+
+## 1. Informasi Project
+
+| Keterangan          | Detail                  |
+| ------------------- | ----------------------- |
+| Nama Project        | POS Nasi Lawar Ulucatu  |
+| Jenis Aplikasi      | Web-based Point of Sale |
+| Framework Utama     | Laravel                 |
+| Metode Pengembangan | Waterfall               |
+| Arsitektur          | Layered Architecture    |
+| Target Pengguna     | Admin/Owner dan Kasir   |
+| Status              | MVP selesai             |
+
+---
+
+## 2. Kontribusi Anggota Kelompok
+
+> Lengkapi bagian link video setelah video individu sudah diunggah ke YouTube Unlisted atau Google Drive.
 
 | No  | Nama                       | NIM      |
 | --- | -------------------------- | -------- |
@@ -13,48 +35,52 @@ Link video penjelasan kelompok:
 | --- | -------------- | -------------- |
 | 1   | Santika & Rada | Isi link video |
 
-## Abstrak
+---
 
-POS Nasi Lawar Ulucatu adalah aplikasi Point of Sale berbasis web untuk membantu proses operasional kasir, pengelolaan produk, pengelolaan kategori, pencatatan transaksi, pembayaran, pencetakan struk thermal, kitchen ticket, dan laporan penjualan. Sistem ini dibangun sebagai Minimum Viable Product (MVP) untuk proyek UAS Rekayasa Perangkat Lunak Tahun Akademik 2025/2026.
+## 3. Abstrak
 
-Dokumen README ini disusun mengikuti gaya dokumentasi IEEE/SRS secara ringkas agar dapat menjelaskan kebutuhan sistem, metode Waterfall, arsitektur, fitur, cara instalasi, GitFlow, design pattern, dan kontribusi anggota kelompok.
+POS Nasi Lawar Ulucatu adalah aplikasi Point of Sale berbasis web yang dirancang untuk membantu proses operasional kasir pada usaha Nasi Lawar Ulucatu. Sistem ini menyediakan fitur login berdasarkan role, pengelolaan kategori dan produk, pengelolaan stok harian, transaksi kasir, pembayaran melalui cash, transfer, dan QRIS manual, pencetakan struk pelanggan, pencetakan kitchen ticket, riwayat transaksi, dashboard rekap penjualan, serta export laporan PDF.
 
-Kata kunci: POS, Laravel, Livewire, Thermal Printer, Dashboard, Rekayasa Perangkat Lunak.
+Aplikasi ini dikembangkan dengan Laravel, Livewire, Blade, Tailwind CSS, MySQL, dan integrasi thermal printer. Fokus utama pengembangan adalah menghasilkan MVP yang dapat berjalan secara lokal, memiliki struktur kode yang rapi, menerapkan Layered Architecture, dan mendokumentasikan design pattern yang digunakan.
+
+**Kata kunci:** POS, Laravel, Livewire, Thermal Printer, Dashboard, Rekayasa Perangkat Lunak.
 
 ---
 
-## 1. Pendahuluan
+## 4. Ruang Lingkup Sistem
 
-### 1.1 Tujuan Dokumen
+Sistem digunakan oleh dua aktor utama, yaitu **Admin/Owner** dan **Kasir**.
 
-Dokumen ini bertujuan untuk menjelaskan spesifikasi, arsitektur, cara menjalankan, dan status implementasi aplikasi POS Nasi Lawar Ulucatu sebagai deliverable UAS Rekayasa Perangkat Lunak.
+### 4.1 Admin/Owner
 
-### 1.2 Ruang Lingkup Sistem
+Admin/Owner dapat:
 
-Sistem digunakan oleh admin dan kasir untuk menjalankan proses penjualan harian di Nasi Lawar Ulucatu. Ruang lingkup MVP meliputi login, manajemen kategori, manajemen produk, transaksi kasir, pembayaran cash/transfer/QRIS, stok produk, cetak struk, kitchen ticket, dashboard, riwayat transaksi, dan export laporan PDF.
+- Login ke sistem.
+- Mengelola data kategori.
+- Mengelola data produk/menu.
+- Mengatur stok porsi harian.
+- Melihat dashboard laporan penjualan.
+- Melihat riwayat transaksi.
+- Mengekspor laporan dalam format PDF.
 
-### 1.3 Target Pengguna
+### 4.2 Kasir
 
-| Aktor         | Deskripsi                                                                                                                       |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| Admin & Owner | Melihat rekap penjualan laporan PDF melalui akun admin dan mengelola kategori, produk, stok, transaksi, dashboard, dan laporan. |
-| Kasir         | Melakukan transaksi penjualan, memilih metode pembayaran, dan mencetak struk.                                                   |
+Kasir dapat:
 
-### 1.4 Metode Pengembangan
-
-Pengembangan sistem menggunakan metode Waterfall. Tahapan yang digunakan adalah analisis kebutuhan, perancangan sistem, implementasi, pengujian, dan dokumentasi. Kebutuhan fungsional dan non-fungsional pada dokumen ini menjadi acuan utama implementasi MVP.
+- Login ke sistem.
+- Membuat transaksi baru.
+- Memilih produk/menu.
+- Menginput nama customer.
+- Memilih tipe pesanan dine-in atau take-away.
+- Memilih metode pembayaran cash, transfer, atau QRIS.
+- Mencetak struk pelanggan.
+- Mencetak kitchen ticket untuk dapur.
 
 ---
 
-## 2. Deskripsi Umum
+## 5. Fitur MVP
 
-### 2.1 Perspektif Produk
-
-POS Nasi Lawar Ulucatu adalah aplikasi web monolitik berbasis Laravel. Frontend dibangun menggunakan Blade, Livewire, Tailwind CSS, dan Vite. Backend menggunakan Laravel, Eloquent ORM, MySQL, dan service class untuk logic pembayaran serta printer thermal.
-
-### 2.2 Fungsi Produk
-
-| Kode | Fungsi                                    | Status  |
+| Kode | Fitur                                     | Status  |
 | ---- | ----------------------------------------- | ------- |
 | F-01 | Login admin dan kasir                     | Selesai |
 | F-02 | Manajemen kategori                        | Selesai |
@@ -70,325 +96,249 @@ POS Nasi Lawar Ulucatu adalah aplikasi web monolitik berbasis Laravel. Frontend 
 | F-12 | Dashboard laporan harian dan bulanan      | Selesai |
 | F-13 | Export PDF laporan dashboard              | Selesai |
 
-### 2.3 Batasan Sistem
+---
 
-| Kode | Batasan                                                                |
-| ---- | ---------------------------------------------------------------------- |
-| B-01 | Sistem berjalan sebagai aplikasi web Laravel.                          |
-| B-02 | Printer thermal dikontrol dari server/laptop yang menjalankan Laravel. |
-| B-03 | Akses iPad/tablet dapat dilakukan melalui jaringan lokal yang sama.    |
-| B-04 | QRIS masih menggunakan flow konfirmasi manual kasir.                   |
-| B-05 | Laporan PDF dibuat dari data transaksi yang tersimpan di database.     |
+## 6. Tech Stack
+
+| Kategori        | Teknologi                     |
+| --------------- | ----------------------------- |
+| Backend         | PHP 8.2+, Laravel             |
+| Frontend        | Blade, Livewire, Tailwind CSS |
+| Build Tool      | Vite                          |
+| Database        | MySQL                         |
+| PDF Generator   | `barryvdh/laravel-dompdf`     |
+| Thermal Printer | `mike42/escpos-php`           |
+| Testing         | Pest / Laravel Test           |
+| Formatter       | Laravel Pint                  |
+| Package Manager | Composer, npm                 |
 
 ---
 
-## 3. Kebutuhan Spesifik
+## 7. Arsitektur Sistem
 
-### 3.1 Kebutuhan Fungsional
+### 7.1 Pola Arsitektur
 
-#### 3.1.1 Autentikasi dan Hak Akses
+Project ini menggunakan **Layered Architecture**. Arsitektur ini digunakan agar kode tidak menumpuk di satu file dan setiap bagian aplikasi memiliki tanggung jawab yang jelas.
 
-| ID   | Kebutuhan                                                                                           | Implementasi                                                                         |
-| ---- | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| FR-1 | Sistem harus menyediakan halaman Login menggunakan username dan password.                           | `app/Livewire/Auth/Login.php`                                                        |
-| FR-2 | Sistem harus dapat membedakan hak akses masuk antara peran Admin (Owner) dan peran Kasir (Pegawai). | `app/Http/Middleware/AdminMiddleware.php`, `app/Http/Middleware/KasirMiddleware.php` |
-| FR-3 | Sistem harus memiliki fitur Logout untuk mengakhiri sesi pengguna yang sedang aktif.                | `routes/web.php`                                                                     |
+| Layer                        | Tanggung Jawab                                                                                                  | Lokasi File                                         |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| Presentation Layer           | Menangani tampilan, route, event UI, validasi input, dan interaksi user                                         | `routes/web.php`, `app/Livewire`, `resources/views` |
+| Application / Business Layer | Mengelola proses bisnis seperti pembayaran, validasi transaksi, pengurangan stok, pencetakan struk, dan laporan | `app/Services`, `app/Http/Controllers`              |
+| Data Access Layer            | Mengakses dan memanipulasi data menggunakan model dan database                                                  | `app/Models`, `database/migrations`                 |
+| Infrastructure Layer         | Menangani integrasi eksternal seperti printer thermal, PDF generator, storage, dan konfigurasi aplikasi         | `config`, service printer, package eksternal        |
 
-#### 3.1.2 Manajemen Master Data Khusus Admin
+### 7.2 Diagram Layer
 
-| ID   | Kebutuhan                                                                                                               | Implementasi                                                                  |
-| ---- | ----------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| FR-4 | Sistem memungkinkan Admin untuk menambah, mengubah harga, dan menghapus data menu makanan, minuman, maupun paket kombo. | `app/Livewire/Admin/ProductIndex.php`, `app/Livewire/Admin/CategoryIndex.php` |
-| FR-5 | Sistem harus menyediakan formulir bagi Admin untuk menginput Stok Porsi Harian pada awal hari operasional.              | `app/Livewire/Admin/ProductIndex.php`                                         |
-
-#### 3.1.3 Proses Transaksi Point of Sales Khusus Kasir
-
-| ID    | Kebutuhan                                                                                                                                                           | Implementasi                                                                      |
-| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| FR-6  | Sistem harus menyediakan antarmuka bagi Kasir untuk menginput pesanan baru, memilih jenis layanan Dine-in atau Take-away, dan memasukkan nomor meja atau antrean.   | `app/Livewire/Kasir/PosIndex.php`, `resources/views/livewire/kasir/pos.blade.php` |
-| FR-7  | Sistem harus dapat menghitung subtotal dan total harga pesanan secara otomatis untuk mengurangi risiko human error.                                                 | `app/Livewire/Kasir/PosIndex.php`                                                 |
-| FR-8  | Sistem wajib memvalidasi ketersediaan stok porsi secara otomatis. Jika stok menu yang dipilih habis, sistem menampilkan peringatan dan menolak input menu tersebut. | `app/Livewire/Kasir/PosIndex.php`                                                 |
-| FR-9  | Sistem harus mendukung penyelesaian transaksi dengan berbagai metode pembayaran, yaitu Tunai, QRIS, dan Transfer Bank.                                              | `app/Livewire/Kasir/PosIndex.php`, `app/Services/TransactionPaymentService.php`   |
-| FR-10 | Setelah pembayaran berhasil divalidasi, sistem wajib mengurangi jumlah stok porsi harian secara otomatis secara real-time.                                          | `app/Livewire/Kasir/PosIndex.php`, `app/Services/TransactionPaymentService.php`   |
-| FR-11 | Sistem harus dapat mencetak struk transaksi, yaitu satu salinan untuk pelanggan sebagai bukti bayar dan satu salinan untuk dapur sebagai tiket pesanan.             | `app/Services/ThermalPrinterService.php`                                          |
-
-#### 3.1.4 Dasbor Laporan dan Analitik Khusus Admin
-
-| ID    | Kebutuhan                                                                                                                      | Implementasi                                                                                   |
-| ----- | ------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
-| FR-12 | Sistem harus menyediakan dasbor rekapitulasi total pendapatan atau omzet harian.                                               | `app/Livewire/Admin/Dashboard.php`                                                             |
-| FR-13 | Sistem harus dapat menampilkan laporan sisa porsi harian untuk memantau pergerakan stok secara langsung.                       | `app/Livewire/Admin/Dashboard.php`                                                             |
-| FR-14 | Sistem harus menyediakan laporan daftar menu terlaris atau Pareto berdasarkan data transaksi yang sudah berhasil diselesaikan. | `app/Livewire/Admin/Dashboard.php`, `app/Http/Controllers/Admin/DashboardReportController.php` |
-
-### 3.2 Kebutuhan Non-Fungsional
-
-#### 3.2.1 Performa
-
-| ID    | Kebutuhan                                                                                                                                                                 | Implementasi                                                                                                |
-| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| NFR-1 | Sistem harus memiliki waktu respons kurang dari 2 detik saat Kasir memasukkan pesanan dan menekan tombol Proses Pembayaran untuk mencegah antrean panjang saat peak hour. | Livewire component, query langsung pada transaksi, validasi stok dalam transaksi database.                  |
-| NFR-2 | Aplikasi harus dirancang ringan dalam pertukaran data ke database/server karena koneksi utama dapat mengandalkan data seluler akibat WiFi lokasi yang sering terputus.    | Data produk dimuat sesuai filter, transaksi disimpan dalam satu proses, aset frontend dibuild melalui Vite. |
-
-#### 3.2.2 Keamanan
-
-| ID    | Kebutuhan                                                                                                                                                                                              | Implementasi                                                                                                          |
-| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
-| NFR-3 | Sistem wajib menerapkan Role-Based Access Control (RBAC) agar Kasir tidak dapat melihat, mengubah, atau menghapus laporan omzet harian maupun data master menu yang hanya boleh diakses Admin (Owner). | `app/Http/Middleware/AdminMiddleware.php`, `app/Http/Middleware/KasirMiddleware.php`, route group di `routes/web.php` |
-| NFR-4 | Kata sandi atau PIN pengguna harus disimpan di database menggunakan hashing agar tidak dapat dibaca oleh pihak tidak berwenang.                                                                        | `Hash::make()` pada seeder dan mekanisme autentikasi Laravel.                                                         |
-
-#### 3.2.3 Skalabilitas
-
-| ID    | Kebutuhan                                                                                                                                                         | Implementasi                                                                                |
-| ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| NFR-5 | Sistem harus dirancang fleksibel agar Admin dapat menambahkan kategori menu baru, varian paket baru, atau menyesuaikan harga tanpa merombak source code aplikasi. | Modul kategori dan produk dinamis melalui database pada `CategoryIndex` dan `ProductIndex`. |
-
-#### 3.2.4 Reliabilitas
-
-| ID    | Kebutuhan                                                                                                                                                                           | Implementasi                                                                                                                  |
-| ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| NFR-6 | Sistem diharapkan memiliki tingkat uptime yang tinggi selama jam operasional rumah makan.                                                                                           | Aplikasi dapat dijalankan pada server/laptop lokal selama jam operasional; production dapat memakai web server permanen.      |
-| NFR-7 | Sistem harus memiliki error handling yang baik. Jika terjadi putus koneksi sesaat saat Kasir memproses transaksi, sistem tidak boleh menyimpan data ganda atau menghilangkan struk. | `DB::beginTransaction()`, `DB::commit()`, `DB::rollBack()`, `lockForUpdate()`, serta proses cetak setelah transaksi berhasil. |
-
-#### 3.2.5 Kemudahan Penggunaan
-
-| ID    | Kebutuhan                                                                                                                                                      | Implementasi                                                                          |
-| ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| NFR-8 | Antarmuka pengguna harus minimalis dan intuitif. Tombol menu dan metode pembayaran harus proporsional agar cepat ditekan dan touch-friendly pada layar tablet. | UI POS berbasis card, tombol metode pembayaran besar, layout responsive Tailwind CSS. |
-
-#### 3.2.6 Kompatibilitas
-
-| ID     | Kebutuhan                                                                                                                                             | Implementasi                                                                                                                                      |
-| ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| NFR-12 | Aplikasi harus kompatibel dan berjalan lancar pada Android, khususnya orientasi layar tablet maupun smartphone standar yang tersedia di lokasi usaha. | Aplikasi berbasis web responsive sehingga dapat diakses melalui browser Android, tablet, smartphone, laptop, dan iPad selama terhubung ke server. |
-
----
-
-## 4. Tech Stack
-
-| Kategori        | Teknologi                         |
-| --------------- | --------------------------------- |
-| Backend         | PHP 8.2+, Laravel 12              |
-| Frontend        | Blade, Livewire 3, Tailwind CSS 4 |
-| Build Tool      | Vite 7                            |
-| Database        | MySQL                             |
-| PDF             | `barryvdh/laravel-dompdf`         |
-| Thermal Printer | `mike42/escpos-php`               |
-| Testing         | Pest, Laravel Test                |
-| Formatter       | Laravel Pint                      |
-| Package Manager | Composer, npm                     |
-
----
-
-## 5. Arsitektur Sistem
-
-### 5.1 Pola Arsitektur
-
-Project ini menggunakan pendekatan Layered Architecture yang disesuaikan dengan struktur Laravel dan Livewire.
-
-| Layer                      | Tanggung Jawab                                                | Lokasi File                                         |
-| -------------------------- | ------------------------------------------------------------- | --------------------------------------------------- |
-| Presentation Layer         | UI, routing, komponen halaman, validasi form, interaksi user. | `routes/web.php`, `app/Livewire`, `resources/views` |
-| Application/Business Layer | Orkestrasi logic pembayaran, stok, printer, dan laporan.      | `app/Services`, `app/Http/Controllers`              |
-| Data Access Layer          | Model dan akses database menggunakan Eloquent ORM.            | `app/Models`, `database/migrations`                 |
-| Infrastructure Layer       | Integrasi printer thermal, storage, PDF, konfigurasi.         | `config`, `app/Services/ThermalPrinterService.php`  |
-
-### 5.2 Diagram Layer
-
-```txt
-Browser / iPad / Laptop
-        |
-        v
-Laravel Routes
-        |
-        v
-Livewire Components / Controllers
-        |
-        v
-Services
-        |
-        v
-Eloquent Models / Database
-        |
-        v
-External Services: Thermal Printer, PDF Generator, Storage
+```mermaid
+flowchart TD
+    A[Browser / iPad / Laptop] --> B[Laravel Routes]
+    B --> C[Livewire Components / Controllers]
+    C --> D[Application Services]
+    D --> E[Eloquent Models]
+    E --> F[(MySQL Database)]
+    D --> G[Thermal Printer]
+    D --> H[PDF Generator]
 ```
 
-### 5.3 Struktur Folder Utama
+### 7.3 Struktur Folder Utama
 
 ```txt
 app/
-├── Console/Commands/          # Command test printer
-├── Http/Controllers/          # Controller export PDF
-├── Http/Middleware/           # Middleware role admin dan kasir
-├── Livewire/                  # Presentation logic halaman
-├── Models/                    # Eloquent models
-├── Providers/                 # Service provider Laravel
-└── Services/                  # Business/application services
+├── Http/
+│   ├── Controllers/      # Controller untuk laporan/export PDF
+│   └── Middleware/       # Middleware role admin dan kasir
+├── Livewire/             # Komponen halaman dan interaksi UI
+├── Models/               # Eloquent model
+├── Providers/            # Laravel service provider
+└── Services/             # Business/application service
 
-config/                        # Konfigurasi aplikasi dan printer
+config/                   # Konfigurasi aplikasi dan printer
 database/
-├── migrations/                # Schema database
-├── seeders/                   # Seeder akun awal development
-└── factories/                 # Factory testing/development
+├── migrations/           # Struktur tabel database
+├── seeders/              # Data awal development
+└── factories/            # Factory untuk testing/development
 
 resources/
-├── views/                     # Blade dan Livewire views
-├── css/                       # CSS entrypoint
-└── js/                        # JS entrypoint
+├── views/                # Blade dan Livewire views
+├── css/                  # CSS entrypoint
+└── js/                   # JavaScript entrypoint
 
-routes/                        # Route web dan console
-tests/                         # Unit dan feature tests
-```
-
-### 5.4 Diagram Use Case
-
-```mermaid
-flowchart LR
-    Admin[Admin]
-    Kasir[Kasir]
-
-    Login((Login))
-    Logout((Logout))
-    KelolaMenu((Kelola Data Menu))
-    KelolaStok((Kelola Stok Harian))
-    KelolaTransaksi((Kelola Transaksi Pesanan))
-    ProsesPembayaran((Proses Pembayaran))
-    CetakStruk((Cetak Struk))
-    CekStok((Cek Sisa Stok))
-    Laporan((Lihat Laporan Penjualan))
-
-    Admin --> Login
-    Admin --> KelolaMenu
-    Admin --> KelolaStok
-    Admin --> Laporan
-
-    Kasir --> Login
-    Kasir --> KelolaTransaksi
-    Kasir --> CekStok
-
-    Login -. include .-> Logout
-    KelolaTransaksi -. include .-> ProsesPembayaran
-    KelolaTransaksi -. include .-> CetakStruk
-```
-
-### 5.5 Activity Diagram Kasir
-
-```mermaid
-flowchart TD
-    Start((Start)) --> Login[Login]
-    Login --> Validasi{Validasi}
-    Validasi -- Salah --> Login
-    Validasi -- Benar --> HalamanTransaksi[Halaman Transaksi Menu]
-    HalamanTransaksi --> PilihMenu[Pilih Menu dan Input Jumlah]
-    PilihMenu --> CekStok{Stok Porsi Tersedia?}
-    CekStok -- Tidak Tersedia --> PilihMenu
-    CekStok -- Tersedia --> Total[Tampilkan Total Harga]
-    Total --> Metode[Pilih Metode Pembayaran]
-    Metode --> Pembayaran{Pembayaran Sukses?}
-    Pembayaran -- Gagal --> Metode
-    Pembayaran -- Berhasil --> Selesai[Selesaikan Transaksi dan Kurangi Stok]
-    Selesai --> Cetak[Cetak Struk]
-    Cetak --> End((End))
-```
-
-### 5.6 Activity Diagram Admin
-
-```mermaid
-flowchart TD
-    Start((Start)) --> Login[Login]
-    Login --> Validasi{Validasi}
-    Validasi -- Salah --> Login
-    Validasi -- Benar --> Dashboard[Halaman Dashboard Admin]
-    Dashboard --> PilihAksi{Pilih Menu Aksi}
-
-    PilihAksi --> Filter[Pilih Filter Periode/Tanggal]
-    Filter --> Rekap[Tampilkan Rekap]
-    Rekap --> AksiLain{Lakukan Aksi Lain?}
-
-    PilihAksi --> Menu[Input/Edit Data Menu dan Harga]
-    Menu --> SimpanMenu[Simpan Data Menu]
-    SimpanMenu --> AksiLain
-
-    PilihAksi --> Stok[Input Stok Porsi Harian]
-    Stok --> SimpanStok[Simpan Data Stok]
-    SimpanStok --> AksiLain
-
-    AksiLain -- Ya --> Dashboard
-    AksiLain -- Tidak --> Logout[Logout]
-    Logout --> End((End))
+routes/                   # Route aplikasi
+tests/                    # Unit dan feature tests
 ```
 
 ---
 
-## 6. Design Patterns yang Digunakan
+## 8. Design Patterns yang Digunakan
 
-| No  | Design Pattern | Lokasi File                                                | Tujuan Penggunaan                                                                                                                               |
-| --- | -------------- | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Adapter        | `app/Services/ThermalPrinterService.php`                   | Membungkus library `mike42/escpos-php` agar fitur POS cukup memanggil service aplikasi tanpa bergantung langsung pada detail connector printer. |
-| 2   | Facade         | `app/Http/Controllers/Admin/DashboardReportController.php` | Menggunakan facade `Pdf` untuk menyederhanakan akses ke generator PDF Laravel DomPDF.                                                           |
-| 3   | Service Layer  | `app/Services/TransactionPaymentService.php`               | Memisahkan logic konfirmasi pembayaran QRIS, validasi status, dan pengurangan stok dari komponen UI.                                            |
+Project ini menerapkan minimal dua design pattern dari rumpun **Gang of Four (GoF)**, yaitu **Adapter Pattern** dan **Facade Pattern**. Selain itu, project juga menggunakan **Service Layer** sebagai pattern arsitektural pendukung, tetapi Service Layer tidak dihitung sebagai GoF pattern utama.
 
-Catatan: Adapter dan Facade termasuk pattern yang relevan untuk integrasi library eksternal. Service Layer digunakan sebagai pattern arsitektural untuk menjaga logic bisnis tidak menumpuk di komponen Livewire.
+### 8.1 Adapter Pattern
 
----
+| Item                      | Penjelasan                                                                                                                                                                                                                                                                   |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Nama Pattern              | Adapter Pattern                                                                                                                                                                                                                                                              |
+| Kategori GoF              | Structural Pattern                                                                                                                                                                                                                                                           |
+| Lokasi File               | `app/Services/ThermalPrinterService.php`                                                                                                                                                                                                                                     |
+| Masalah yang Diselesaikan | Library printer thermal `mike42/escpos-php` memiliki detail teknis seperti connector, profile printer, perintah print, feed, cut, dan formatting text. Jika detail ini dipanggil langsung dari komponen kasir, maka kode POS akan terlalu bergantung pada library eksternal. |
+| Solusi                    | `ThermalPrinterService` berperan sebagai adapter yang membungkus library printer menjadi method yang lebih sesuai dengan kebutuhan aplikasi, seperti `printCustomerReceipt()` dan `printKitchenTicket()`.                                                                    |
+| Manfaat                   | Komponen POS tidak perlu mengetahui detail teknis printer. Jika printer atau library diganti, perubahan cukup dilakukan pada service printer, bukan pada seluruh logic transaksi.                                                                                            |
 
-## 7. Database
+**Alasan penggunaan:**
 
-### 7.1 Entitas Utama
-
-| Entitas               | Deskripsi                                                         |
-| --------------------- | ----------------------------------------------------------------- |
-| `users`               | Data akun admin dan kasir.                                        |
-| `categories`          | Data kategori produk.                                             |
-| `products`            | Data produk, harga, stok, status aktif, dan gambar.               |
-| `transactions`        | Data header transaksi, invoice, customer, pembayaran, dan status. |
-| `transaction_details` | Detail produk yang dibeli pada transaksi.                         |
-
-### 7.2 Relasi Utama
-
-| Relasi                          | Keterangan                                           |
-| ------------------------------- | ---------------------------------------------------- |
-| User - Transaction              | Satu user/kasir dapat menangani banyak transaksi.    |
-| Category - Product              | Satu kategori memiliki banyak produk.                |
-| Transaction - TransactionDetail | Satu transaksi memiliki banyak detail transaksi.     |
-| Product - TransactionDetail     | Satu produk dapat muncul di banyak detail transaksi. |
+Adapter Pattern digunakan karena sistem perlu menghubungkan logic aplikasi POS dengan perangkat eksternal, yaitu printer thermal. Dengan adanya adapter, integrasi printer menjadi lebih terisolasi dan kode utama aplikasi tetap bersih.
 
 ---
 
-## 8. Cara Menjalankan Project Secara Lokal
+### 8.2 Facade Pattern
 
-### 8.1 Prasyarat
+| Item                      | Penjelasan                                                                                                                                                                                                                                                                 |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Nama Pattern              | Facade Pattern                                                                                                                                                                                                                                                             |
+| Kategori GoF              | Structural Pattern                                                                                                                                                                                                                                                         |
+| Lokasi File               | `app/Http/Controllers/Admin/DashboardReportController.php`                                                                                                                                                                                                                 |
+| Masalah yang Diselesaikan | Proses pembuatan laporan PDF membutuhkan beberapa tahapan, seperti mengambil data transaksi, menghitung total omzet, menghitung jumlah transaksi, mengambil data menu terlaris, mengambil stok menipis, memuat view PDF, menentukan ukuran kertas, dan mengunduh file PDF. |
+| Solusi                    | Controller menyediakan satu alur sederhana untuk menghasilkan laporan PDF harian dan bulanan. Pada bagian generator PDF, aplikasi menggunakan facade `Pdf` dari package Laravel DomPDF agar proses pembuatan PDF dapat dipanggil dengan interface yang ringkas.            |
+| Manfaat                   | Detail kompleks pembuatan PDF tidak tersebar di banyak bagian aplikasi. Admin cukup menekan tombol export, lalu sistem menghasilkan laporan PDF melalui satu alur yang terpusat.                                                                                           |
+
+**Alasan penggunaan:**
+
+Facade Pattern digunakan untuk menyederhanakan akses ke proses laporan. Proses yang sebenarnya terdiri dari query data, kalkulasi laporan, render view, dan generate PDF disajikan dalam interface yang lebih sederhana melalui controller laporan dan facade PDF.
+
+---
+
+### 8.3 Service Layer sebagai Pattern Arsitektural Pendukung
+
+| Item         | Penjelasan                                                                                                                                                                              |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Nama Pattern | Service Layer                                                                                                                                                                           |
+| Jenis        | Architectural Pattern                                                                                                                                                                   |
+| Lokasi File  | `app/Services/TransactionPaymentService.php`                                                                                                                                            |
+| Tujuan       | Memisahkan logic pembayaran, validasi status transaksi, dan pengurangan stok dari komponen UI Livewire.                                                                                 |
+| Catatan      | Service Layer bukan bagian utama dari 23 GoF Design Patterns, sehingga tidak dihitung sebagai dua pattern utama. Namun, pattern ini tetap penting untuk mendukung Layered Architecture. |
+
+**Alasan penggunaan:**
+
+Service Layer digunakan agar logic bisnis transaksi tidak menumpuk di komponen Livewire. Dengan pemisahan ini, komponen UI bertugas menangani interaksi user, sedangkan aturan bisnis transaksi dipindahkan ke service.
+
+---
+
+## 9. Database
+
+### 9.1 Entitas Utama
+
+| Entitas               | Deskripsi                                                                       |
+| --------------------- | ------------------------------------------------------------------------------- |
+| `users`               | Menyimpan data akun admin dan kasir                                             |
+| `categories`          | Menyimpan kategori produk/menu                                                  |
+| `products`            | Menyimpan data produk, harga, stok, status aktif, dan gambar                    |
+| `transactions`        | Menyimpan header transaksi, invoice, customer, pembayaran, dan status transaksi |
+| `transaction_details` | Menyimpan detail produk yang dibeli dalam transaksi                             |
+
+### 9.2 Relasi Utama
+
+| Relasi                          | Keterangan                                          |
+| ------------------------------- | --------------------------------------------------- |
+| User - Transaction              | Satu user/kasir dapat menangani banyak transaksi    |
+| Category - Product              | Satu kategori memiliki banyak produk                |
+| Transaction - TransactionDetail | Satu transaksi memiliki banyak detail transaksi     |
+| Product - TransactionDetail     | Satu produk dapat muncul di banyak detail transaksi |
+
+### 9.3 ERD Sederhana
+
+```mermaid
+erDiagram
+    USERS ||--o{ TRANSACTIONS : handles
+    CATEGORIES ||--o{ PRODUCTS : contains
+    TRANSACTIONS ||--o{ TRANSACTION_DETAILS : has
+    PRODUCTS ||--o{ TRANSACTION_DETAILS : included_in
+
+    USERS {
+        bigint id
+        string name
+        string username
+        string password
+        string role
+    }
+
+    CATEGORIES {
+        bigint id
+        string name
+    }
+
+    PRODUCTS {
+        bigint id
+        bigint category_id
+        string name
+        decimal price
+        int stock
+        boolean is_active
+    }
+
+    TRANSACTIONS {
+        bigint id
+        bigint user_id
+        string invoice_number
+        string customer_name
+        string order_type
+        string payment_method
+        string payment_status
+        decimal subtotal
+        decimal discount
+        decimal tax
+        decimal total
+        decimal paid
+        decimal change
+    }
+
+    TRANSACTION_DETAILS {
+        bigint id
+        bigint transaction_id
+        bigint product_id
+        int quantity
+        decimal price
+        decimal subtotal
+    }
+```
+
+---
+
+## 10. Cara Menjalankan Project Secara Lokal
+
+### 10.1 Prasyarat
+
+Pastikan perangkat sudah memiliki tools berikut:
 
 | Tools    | Versi Minimum   |
 | -------- | --------------- |
-| PHP      | 8.2             |
+| PHP      | 8.2+            |
 | Composer | 2.x             |
 | Node.js  | 20.x disarankan |
 | npm      | 10.x disarankan |
 | MySQL    | 8.x disarankan  |
 
-### 8.2 Clone Repository
+### 10.2 Clone Repository
 
 ```bash
 git clone https://github.com/wsantika/pos-nasiLawarUlucatu.git
 cd pos-nasiLawarUlucatu
 ```
 
-### 8.3 Install Dependency
+### 10.3 Install Dependency
 
 ```bash
 composer install
 npm install
 ```
 
-### 8.4 Setup Environment
+### 10.4 Setup Environment
 
 ```bash
 cp .env.example .env
 php artisan key:generate
 ```
 
-Sesuaikan konfigurasi database di `.env`.
+Sesuaikan konfigurasi database pada file `.env`.
 
 ```env
 DB_CONNECTION=mysql
@@ -399,7 +349,9 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-Konfigurasi printer thermal tersedia di `.env`.
+### 10.5 Setup Konfigurasi Printer Thermal
+
+Konfigurasi printer thermal dapat diatur pada file `.env`.
 
 ```env
 THERMAL_PRINTER_ENABLED=true
@@ -408,49 +360,66 @@ THERMAL_PRINTER_LINE_WIDTH=32
 THERMAL_PRINTER_CUT=false
 ```
 
-### 8.5 Migrasi Database
+Jika printer tidak digunakan saat development, ubah menjadi:
+
+```env
+THERMAL_PRINTER_ENABLED=false
+```
+
+### 10.6 Migrasi Database
 
 ```bash
 php artisan migrate
 ```
 
-Seeder dapat digunakan untuk development.
+Seeder dapat dijalankan untuk kebutuhan development.
 
 ```bash
 php artisan db:seed
 ```
 
-Catatan: Jangan gunakan credential default seeder untuk production tanpa mengganti password.
+> Catatan: Jangan gunakan credential default dari seeder untuk production tanpa mengganti password.
 
-### 8.6 Jalankan Aplikasi Development
+### 10.7 Jalankan Aplikasi Development
 
 ```bash
 composer run dev
 ```
 
-Atau jalankan proses secara manual.
+Atau jalankan backend dan frontend secara manual.
 
 ```bash
 php artisan serve
 npm run dev
 ```
 
-### 8.7 Jalankan di iPad atau Device Satu WiFi
+Akses aplikasi melalui browser:
+
+```txt
+http://127.0.0.1:8000
+```
+
+### 10.8 Jalankan di iPad atau Device Satu WiFi
 
 Build asset terlebih dahulu.
 
 ```bash
 npm run build
+```
+
+Jalankan Laravel agar dapat diakses dari device lain dalam jaringan yang sama.
+
+```bash
 php artisan serve --host=0.0.0.0 --port=8000
 ```
 
-Buka dari iPad menggunakan IP laptop/server.
+Buka dari iPad/tablet menggunakan IP laptop/server.
 
 ```txt
 http://192.168.x.x:8000
 ```
 
-### 8.8 Test Printer
+### 10.9 Test Printer
 
 ```bash
 php artisan printer:test
@@ -458,35 +427,35 @@ php artisan printer:test
 
 ---
 
-## 9. Testing, Linter, dan Formatting
+## 11. Testing, Linter, dan Formatting
 
-### 9.1 Menjalankan Test
+### 11.1 Menjalankan Test
 
 ```bash
 php artisan test
 ```
 
-Atau melalui script Composer.
+Atau melalui script Composer:
 
 ```bash
 composer test
 ```
 
-### 9.2 Formatting PHP
+### 11.2 Formatting PHP
 
-Project menggunakan Laravel Pint sebagai formatter PHP.
+Project menggunakan **Laravel Pint** untuk menjaga style kode PHP.
 
 ```bash
 ./vendor/bin/pint
 ```
 
-### 9.3 Build Asset
+### 11.3 Build Asset
 
 ```bash
 npm run build
 ```
 
-### 9.4 Bukti Verifikasi Terakhir
+### 11.4 Bukti Verifikasi Terakhir
 
 ```txt
 php artisan test
@@ -495,38 +464,57 @@ Tests: 2 passed
 
 ---
 
-## 10. GitFlow Workflow
+## 12. GitFlow Workflow
 
-Project ini menggunakan alur GitFlow.
+Project ini menggunakan alur kerja **GitFlow** agar pengembangan lebih rapi dan mudah diaudit.
 
-| Branch               | Fungsi                         |
-| -------------------- | ------------------------------ |
-| `main`               | Branch stabil/production.      |
-| `dev`                | Branch integrasi pengembangan. |
-| `feature/nama-fitur` | Branch pengerjaan fitur.       |
-| `fix/nama-bug`       | Branch perbaikan bug.          |
+| Branch               | Fungsi                        |
+| -------------------- | ----------------------------- |
+| `main`               | Branch stabil/production      |
+| `dev`                | Branch integrasi pengembangan |
+| `feature/nama-fitur` | Branch pengerjaan fitur baru  |
+| `fix/nama-bug`       | Branch perbaikan bug          |
 
 Aturan kontribusi:
 
 - Tidak melakukan commit langsung ke `main`.
 - Fitur dan bugfix dikerjakan pada branch terpisah.
 - Merge perubahan dilakukan melalui Pull Request.
-- Commit mengikuti conventional commits.
+- Pull Request direview minimal oleh satu anggota tim.
+- Commit mengikuti format Conventional Commits.
 
-Contoh commit yang digunakan:
+Contoh format commit:
 
 ```txt
 feat(payment): add customer name column
 feat(printer): prompt receipt printing after payment
 fix(payment): set shortcut amount directly
 feat(report): add PDF export functionality for daily and monthly reports
+docs(readme): update architecture and design pattern documentation
 ```
 
 ---
 
-## 11. Dokumentasi Tambahan
+## 13. Panduan Video Penjelasan Individu
 
-Saat ini folder `docs/` belum tersedia di repository. Jika diagram UTS diperbarui, simpan dokumentasi tambahan di folder `docs/`.
+Setiap anggota kelompok membuat video penjelasan individu berdurasi 5–7 menit.
+
+Isi video yang disarankan:
+
+1. Tampilkan histori commit pribadi di GitHub.
+2. Tampilkan branch `feature/` yang pernah dikerjakan.
+3. Tampilkan Pull Request yang dibuat atau direview.
+4. Jelaskan fitur/modul yang dikerjakan.
+5. Jelaskan pemisahan layer arsitektur pada kode.
+6. Jelaskan minimal satu design pattern yang dipahami dan diterapkan.
+7. Tunjukkan hasil linter/formatter/test.
+8. Jelaskan prinsip clean code yang digunakan, seperti nama variabel jelas, fungsi kecil, dan pemisahan tanggung jawab.
+
+---
+
+## 14. Dokumentasi Tambahan
+
+Folder `docs/` dapat digunakan untuk menyimpan dokumentasi pendukung apabila terdapat pembaruan dari rancangan UTS.
 
 Dokumentasi yang disarankan:
 
@@ -535,49 +523,48 @@ Dokumentasi yang disarankan:
 - Sequence Diagram
 - Class Diagram
 - ERD
-- Dokumentasi perubahan dari rancangan UTS
+- Dokumentasi perubahan dari rancangan UTS ke implementasi UAS
 
 ---
 
-## 12. Status MVP
+## 15. Status MVP
 
-| Kategori        | Status       | Keterangan                                                  |
-| --------------- | ------------ | ----------------------------------------------------------- |
-| Autentikasi     | Selesai      | Login dan role admin/kasir tersedia.                        |
-| Admin Panel     | Selesai      | Dashboard, kategori, produk, transaksi.                     |
-| POS Kasir       | Selesai      | Keranjang, pembayaran, customer, struk.                     |
-| QRIS Manual     | Selesai      | Pending, confirm, cancel.                                   |
-| Printer Thermal | Selesai      | Customer receipt dan kitchen ticket.                        |
-| Export PDF      | Selesai      | Laporan harian dan bulanan.                                 |
-| Testing         | Minimal      | Test bawaan Laravel berjalan.                               |
-| Dokumentasi     | Selesai awal | README format IEEE tersedia, data anggota perlu dilengkapi. |
+| Kategori        | Status           | Keterangan                                    |
+| --------------- | ---------------- | --------------------------------------------- |
+| Autentikasi     | Selesai          | Login dan role admin/kasir tersedia           |
+| Admin Panel     | Selesai          | Dashboard, kategori, produk, transaksi        |
+| POS Kasir       | Selesai          | Keranjang, pembayaran, customer, struk        |
+| QRIS Manual     | Selesai          | Pending, confirm, cancel                      |
+| Printer Thermal | Selesai          | Customer receipt dan kitchen ticket           |
+| Export PDF      | Selesai          | Laporan harian dan bulanan                    |
+| Testing         | Minimal          | Test bawaan Laravel berjalan                  |
+| Dokumentasi     | Perlu finalisasi | Link video individu dan docs perlu dilengkapi |
 
 ---
 
-## 13. Checklist Sebelum Pengumpulan
+## 16. Checklist Sebelum Pengumpulan
 
-### 14.1 Produk Kelompok
+### 16.1 Produk Kelompok
 
 - [x] Aplikasi dapat dijalankan secara lokal.
 - [x] Fitur MVP utama tersedia.
 - [x] Validasi input tersedia pada fitur penting.
 - [x] Error handling dasar tersedia.
-- [x] Struktur folder mengikuti Laravel dan layered architecture.
-- [x] Minimal 2 pattern didokumentasikan.
+- [x] Struktur folder mengikuti Laravel dan Layered Architecture.
+- [x] Minimal 2 GoF design pattern didokumentasikan.
 - [x] README utama tersedia.
-- [x] Data kontribusi anggota sudah lengkap.
-- [ ] Link video individu sudah lengkap.
-- [x] Dokumentasi diagram tambahan tersedia jika diwajibkan.
+- [x] Data kontribusi anggota tersedia.
 
-### 14.2 Git dan Kolaborasi
+### 16.2 Git dan Kolaborasi
 
-- [x] Commit menggunakan conventional commits.
+- [x] Commit menggunakan Conventional Commits.
 - [x] Branch `main` digunakan untuk versi stabil.
 - [x] Branch `dev` digunakan untuk integrasi pengembangan.
-- [x] Pull Request digunakan pada merge fitur sebelumnya.
+- [x] Fitur dikerjakan pada branch `feature/nama-fitur`.
+- [x] Pull Request digunakan saat merge fitur.
 
 ---
 
-## 14. Lisensi
+## 17. Lisensi
 
-Project ini dibuat untuk kebutuhan akademik UAS Rekayasa Perangkat Lunak 2025/2026. Dependency Laravel mengikuti lisensi masing-masing package.
+Project ini dibuat untuk kebutuhan akademik UAS Rekayasa Perangkat Lunak Tahun Akademik 2025/2026. Dependency dan package yang digunakan mengikuti lisensi masing-masing library.
