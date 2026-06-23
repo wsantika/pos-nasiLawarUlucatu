@@ -45,6 +45,15 @@
                                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                 </svg>
                             </div>
+                            <button wire:click="openResetStockModal"
+                                class="bg-white text-slate-700 px-4 py-2.5 rounded-lg hover:bg-slate-50 transition-colors flex items-center space-x-2 whitespace-nowrap font-medium border border-slate-300">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                                    </path>
+                                </svg>
+                                <span>Reset Semua Stok</span>
+                            </button>
                             <button wire:click="openModal"
                                 class="bg-slate-900 text-white px-4 py-2.5 rounded-lg hover:bg-slate-800 transition-colors flex items-center space-x-2 whitespace-nowrap font-medium">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -179,7 +188,7 @@
                                                 Tampilkan
                                             @endif
                                         </button>
-                                        <button wire:click="edit({{ $product->id }})"
+                                         <button wire:click="edit({{ $product->id }})"
                                             class="inline-flex items-center px-3 py-1.5 border border-slate-300 text-xs font-medium rounded-lg text-slate-700 bg-white hover:bg-slate-50 transition-colors">
                                             <svg class="w-3 h-3 mr-1.5" fill="none" stroke="currentColor"
                                                 viewBox="0 0 24 24">
@@ -187,9 +196,19 @@
                                                     d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
                                                 </path>
                                             </svg>
-                                            Edit
+                                             Edit
+                                         </button>
+                                        <button wire:click="openResetStockModal({{ $product->id }})"
+                                            class="inline-flex items-center px-3 py-1.5 border border-slate-300 text-xs font-medium rounded-lg text-slate-700 bg-white hover:bg-slate-50 transition-colors">
+                                            <svg class="w-3 h-3 mr-1.5" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                                                </path>
+                                            </svg>
+                                            Reset Stok
                                         </button>
-                                        <button wire:click="delete({{ $product->id }})"
+                                         <button wire:click="delete({{ $product->id }})"
                                             wire:confirm="Apakah Anda yakin ingin menghapus produk ini?"
                                             class="inline-flex items-center px-3 py-1.5 border border-red-300 text-xs font-medium rounded-lg text-red-700 bg-white hover:bg-red-50 transition-colors">
                                             <svg class="w-3 h-3 mr-1.5" fill="none" stroke="currentColor"
@@ -389,6 +408,76 @@
                                         </path>
                                     </svg>
                                 </span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    <!-- Reset Stock Modal -->
+    @if ($showResetStockModal)
+        <div class="fixed inset-0 z-50 overflow-y-auto">
+            <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+                <div class="fixed inset-0 transition-opacity bg-slate-900 bg-opacity-50" wire:click="closeResetStockModal">
+                </div>
+
+                <div
+                    class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full">
+                    <form wire:submit.prevent="resetStock">
+                        <div class="bg-white px-6 py-4 border-b border-slate-200">
+                            <div class="flex items-start justify-between">
+                                <div>
+                                    <h3 class="text-lg font-semibold text-slate-900">Reset Stok Produk</h3>
+                                    <p class="text-sm text-slate-500 mt-1">
+                                        {{ $resetStockAll ? 'Ubah stok semua produk sekaligus.' : 'Ubah stok untuk ' . $resetStockProductName . '.' }}
+                                    </p>
+                                </div>
+                                <button type="button" wire:click="closeResetStockModal"
+                                    class="text-slate-400 hover:text-slate-600 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="bg-white px-6 py-4 space-y-4">
+                            <div class="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">
+                                <p class="text-xs font-medium uppercase tracking-wide text-slate-500">Target Reset</p>
+                                <p class="mt-1 text-sm font-semibold text-slate-900">{{ $resetStockProductName }}</p>
+                            </div>
+
+                            <div>
+                                <label for="resetStockValue" class="block text-sm font-medium text-slate-700 mb-2">
+                                    Stok Baru <span class="text-red-500">*</span>
+                                </label>
+                                <input type="number" id="resetStockValue" wire:model="resetStockValue" min="0"
+                                    class="block w-full px-3 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent @error('resetStockValue') border-red-500 @enderror"
+                                    placeholder="Contoh: 50">
+                                @error('resetStockValue')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <p class="text-xs text-slate-500">
+                                Setelah disimpan, stok di halaman produk dan POS langsung mengikuti nilai baru.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-50 px-6 py-4 flex justify-end space-x-3 border-t border-slate-200">
+                            <button type="button" wire:click="closeResetStockModal"
+                                class="px-4 py-2.5 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-100 transition-colors font-medium">
+                                Batal
+                            </button>
+                            <button type="submit"
+                                wire:confirm="Stok produk akan diubah sesuai nilai baru. Lanjutkan?"
+                                wire:loading.attr="disabled"
+                                class="px-4 py-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-colors font-medium disabled:opacity-60">
+                                <span wire:loading.remove wire:target="resetStock">Reset Stok</span>
+                                <span wire:loading wire:target="resetStock">Menyimpan...</span>
                             </button>
                         </div>
                     </form>
