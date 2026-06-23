@@ -31,6 +31,11 @@ class ProductIndex extends Component
     public $is_active = true;
     public $isEdit = false;
     public $showModal = false;
+    public $showResetStockModal = false;
+    public $resetStockProductId;
+    public $resetStockProductName = '';
+    public $resetStockValue = '';
+    public $resetStockAll = false;
 
     protected $rules = [
         'name' => 'required|min:3',
@@ -153,6 +158,52 @@ class ProductIndex extends Component
         $product = Product::find($id);
         $product->update(['is_active' => !$product->is_active]);
         session()->flash('message', $product->is_active ? 'Produk diaktifkan' : 'Produk dinonaktifkan');
+    }
+
+    public function openResetStockModal($id = null)
+    {
+        $this->resetValidation('resetStockValue');
+        $this->resetStockValue = '';
+        $this->resetStockProductId = $id;
+        $this->resetStockAll = $id === null;
+        $this->resetStockProductName = 'Semua produk';
+
+        if ($id !== null) {
+            $product = Product::findOrFail($id);
+            $this->resetStockProductName = $product->name;
+        }
+
+        $this->showResetStockModal = true;
+    }
+
+    public function closeResetStockModal()
+    {
+        $this->showResetStockModal = false;
+        $this->reset(['resetStockProductId', 'resetStockProductName', 'resetStockValue', 'resetStockAll']);
+        $this->resetStockProductName = '';
+        $this->resetStockAll = false;
+        $this->resetValidation('resetStockValue');
+    }
+
+    public function resetStock()
+    {
+        $this->validate([
+            'resetStockValue' => ['required', 'integer', 'min:0'],
+        ], [
+            'resetStockValue.required' => 'Stok baru wajib diisi',
+            'resetStockValue.integer' => 'Stok baru harus berupa angka',
+            'resetStockValue.min' => 'Stok baru minimal 0',
+        ]);
+
+        if ($this->resetStockAll) {
+            Product::query()->update(['stock' => $this->resetStockValue]);
+            session()->flash('message', 'Stok semua produk berhasil direset');
+        } else {
+            Product::findOrFail($this->resetStockProductId)->update(['stock' => $this->resetStockValue]);
+            session()->flash('message', 'Stok produk berhasil direset');
+        }
+
+        $this->closeResetStockModal();
     }
 
     public function render()
