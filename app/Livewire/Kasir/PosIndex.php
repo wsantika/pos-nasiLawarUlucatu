@@ -30,12 +30,14 @@ class PosIndex extends Component
     public $paymentMethod = 'cash';
     public $orderType = 'dine-in';
     public $tableNumber = '';
+    public $customerName = '';
     public $paid = 0;
     public $change = 0;
     public $showPaymentModal = false;
     public $showSuccessModal = false;
     public $showQrisPendingModal = false;
     public $lastInvoice = '';
+    public $lastTransactionId = null;
     public $pendingQrisTransactionId = null;
     public $pendingQrisInvoice = '';
     public $manualQrisImageUrl = null;
@@ -233,6 +235,7 @@ class PosIndex extends Component
             'paid' => $isQris ? 'nullable|numeric|min:0' : 'required|numeric|min:' . max(0, (float) $this->total),
             'discount' => 'nullable|numeric|min:0',
             'tax' => 'nullable|numeric|min:0',
+            'customerName' => 'nullable|string|max:100',
         ], [
             'tableNumber.required' => 'Nomor meja wajib diisi untuk dine-in.',
             'paid.min' => 'Jumlah pembayaran kurang dari total transaksi.',
@@ -256,6 +259,7 @@ class PosIndex extends Component
             $transaction = Transaction::create([
                 'invoice_number' => $invoiceNumber,
                 'user_id' => auth()->id(),
+                'customer_name' => $this->customerName ?: null,
                 'subtotal' => (float) $this->subtotal,
                 'discount' => (float) $this->discount,
                 'tax' => (float) $this->tax,
@@ -311,19 +315,8 @@ class PosIndex extends Component
 
             $transaction->load(['details.product', 'user']);
 
-            try {
-                app(ThermalPrinterService::class)->printCustomerReceipt($transaction);
-                app(ThermalPrinterService::class)->printKitchenTicket($transaction);
-            } catch (\Throwable $printError) {
-                report($printError);
-
-                session()->flash(
-                    'error',
-                    'Transaksi berhasil, tetapi struk gagal dicetak: ' . $printError->getMessage()
-                );
-            }
-
             $this->lastInvoice = $transaction->invoice_number ?? '';
+            $this->lastTransactionId = $transaction->id;
             $this->showPaymentModal = false;
             $this->showSuccessModal = true;
 
@@ -345,19 +338,8 @@ class PosIndex extends Component
             $transaction = Transaction::findOrFail($this->pendingQrisTransactionId);
             $transaction = app(TransactionPaymentService::class)->markAsSuccess($transaction);
 
-            try {
-                app(ThermalPrinterService::class)->printCustomerReceipt($transaction);
-                app(ThermalPrinterService::class)->printKitchenTicket($transaction);
-            } catch (\Throwable $printError) {
-                report($printError);
-
-                session()->flash(
-                    'error',
-                    'Pembayaran berhasil, tetapi struk gagal dicetak: ' . $printError->getMessage()
-                );
-            }
-
             $this->lastInvoice = $transaction->invoice_number;
+            $this->lastTransactionId = $transaction->id;
             $this->showQrisPendingModal = false;
             $this->showSuccessModal = true;
             $this->pendingQrisTransactionId = null;
@@ -398,14 +380,33 @@ class PosIndex extends Component
         $this->paid = 0;
         $this->change = 0;
         $this->paymentMethod = 'cash';
+        $this->customerName = '';
         $this->loadProducts();
         $this->orderType = 'dine-in';
         $this->tableNumber = '';
     }
 
+    public function printLastReceipt()
+    {
+        if (!$this->lastTransactionId) {
+            return;
+        }
+
+        try {
+            $transaction = Transaction::with(['details.product', 'user'])->findOrFail($this->lastTransactionId);
+            app(ThermalPrinterService::class)->printCustomerReceipt($transaction);
+            app(ThermalPrinterService::class)->printKitchenTicket($transaction);
+            $this->closeSuccessModal();
+        } catch (\Throwable $printError) {
+            report($printError);
+            session()->flash('error', 'Struk gagal dicetak: ' . $printError->getMessage());
+        }
+    }
+
     public function closeSuccessModal()
     {
         $this->showSuccessModal = false;
+        $this->lastTransactionId = null;
     }
 
     public function closeQrisPendingModal()

@@ -40,6 +40,7 @@ class ThermalPrinterService
             $printer->text($this->row('Invoice', $transaction->invoice_number));
             $printer->text($this->row('Tanggal', $transaction->created_at->format('d/m/Y H:i')));
             $printer->text($this->row('Kasir', $transaction->user->name ?? '-'));
+            $printer->text($this->row('Customer', $transaction->customer_name ?: '-'));
             $printer->text($this->row('Order', $this->formatOrderType($transaction->order_type)));
 
             if ($transaction->order_type === 'dine-in') {
@@ -106,6 +107,7 @@ class ThermalPrinterService
             $printer->text($this->separator());
             $printer->text($this->row('Invoice', $transaction->invoice_number));
             $printer->text($this->row('Waktu', $transaction->created_at->format('d/m/Y H:i')));
+            $printer->text($this->row('Customer', $transaction->customer_name ?: '-'));
             $printer->text($this->row('Order', $this->formatOrderType($transaction->order_type)));
 
             if ($transaction->order_type === 'dine-in') {
