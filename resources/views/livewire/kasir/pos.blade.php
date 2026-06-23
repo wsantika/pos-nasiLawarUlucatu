@@ -587,7 +587,7 @@
                                     @foreach ([10000, 20000, 50000, 100000] as $amount)
                                         <button
                                             type="button"
-                                            wire:click="$set('paid', {{ $total + $amount }})"
+                                            wire:click="$set('paid', {{ $amount }})"
                                             class="px-3 py-2 text-sm border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors"
                                         >
                                             {{ number_format($amount, 0, ',', '.') }}
