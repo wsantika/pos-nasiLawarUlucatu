@@ -18,9 +18,11 @@ class Dashboard extends Component
     private const LOW_STOCK_LIMIT = 10;
 
     public ?string $dailyDateInput = null;
+
     public ?string $monthInput = null;
 
     public ?string $dailyDate = null;
+
     public ?string $monthPeriod = null;
 
     public function mount(): void

@@ -4,19 +4,20 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Mike42\Escpos\CapabilityProfile;
-use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
+use Mike42\Escpos\Printer;
 
 class TestThermalPrinter extends Command
 {
     protected $signature = 'printer:test';
+
     protected $description = 'Test print ke printer thermal';
 
     public function handle(): int
     {
         $printerName = config('thermal-printer.name');
 
-        $this->info('Mencoba print ke printer: ' . $printerName);
+        $this->info('Mencoba print ke printer: '.$printerName);
 
         $profile = CapabilityProfile::load('simple');
         $connector = new WindowsPrintConnector($printerName);
@@ -33,7 +34,7 @@ class TestThermalPrinter extends Command
             $printer->setJustification(Printer::JUSTIFY_LEFT);
             $printer->text("--------------------------------\n");
             $printer->text("Printer: {$printerName}\n");
-            $printer->text("Waktu  : " . now()->format('d/m/Y H:i:s') . "\n");
+            $printer->text('Waktu  : '.now()->format('d/m/Y H:i:s')."\n");
             $printer->text("--------------------------------\n");
             $printer->feed(3);
 
@@ -45,6 +46,7 @@ class TestThermalPrinter extends Command
         }
 
         $this->info('Test print berhasil dikirim.');
+
         return self::SUCCESS;
     }
 }

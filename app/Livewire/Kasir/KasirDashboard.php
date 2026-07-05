@@ -2,16 +2,17 @@
 
 namespace App\Livewire\Kasir;
 
-use Livewire\Component;
 use App\Models\Transaction;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
+use Livewire\Component;
 
 #[Layout('components.layouts.kasir')]
 #[Title('Kasir - POS Nasi Lawar Ulucatu')]
 class KasirDashboard extends Component
 {
     public $todayTransactions;
+
     public $todayRevenue;
 
     public function mount()
@@ -25,4 +26,3 @@ class KasirDashboard extends Component
         return view('livewire.kasir.dashboard');
     }
 }
-

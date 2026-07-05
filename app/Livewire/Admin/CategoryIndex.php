@@ -2,29 +2,35 @@
 
 namespace App\Livewire\Admin;
 
-use Livewire\Component;
 use App\Models\Category;
-use Livewire\WithPagination;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
+use Livewire\Component;
+use Livewire\WithPagination;
 
 #[Layout('components.layouts.app')]
 #[Title('Kategori - Nasi Lawar Ulucatu')]
 class CategoryIndex extends Component
 {
     use WithPagination;
+
     protected $paginationTheme = 'tailwind';
 
     public $search = '';
+
     public $categoryId;
+
     public $name = '';
+
     public $description = '';
+
     public $isEdit = false;
+
     public $showModal = false;
 
     protected $rules = [
         'name' => 'required|min:3',
-        'description' => 'nullable'
+        'description' => 'nullable',
     ];
 
     protected $messages = [
@@ -63,13 +69,13 @@ class CategoryIndex extends Component
             $category = Category::find($this->categoryId);
             $category->update([
                 'name' => $this->name,
-                'description' => $this->description
+                'description' => $this->description,
             ]);
             session()->flash('message', 'Kategori berhasil diupdate');
         } else {
             Category::create([
                 'name' => $this->name,
-                'description' => $this->description
+                'description' => $this->description,
             ]);
             session()->flash('message', 'Kategori berhasil ditambahkan');
         }
@@ -95,6 +101,7 @@ class CategoryIndex extends Component
             // Cek dulu apakah kategori punya produk
             if ($category->products()->count() > 0) {
                 session()->flash('error', 'Kategori tidak dapat dihapus karena masih memiliki produk');
+
                 return;
             }
 
@@ -108,13 +115,13 @@ class CategoryIndex extends Component
 
     public function render()
     {
-        $categories = Category::where('name', 'like', '%' . $this->search . '%')
+        $categories = Category::where('name', 'like', '%'.$this->search.'%')
             ->withCount('products')
             ->latest()
             ->paginate(10);
 
         return view('livewire.admin.category', [
-            'categories' => $categories
+            'categories' => $categories,
         ]);
     }
 }

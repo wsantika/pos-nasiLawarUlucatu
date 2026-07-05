@@ -2,39 +2,57 @@
 
 namespace App\Livewire\Admin;
 
-use Livewire\Component;
-use App\Models\Product;
 use App\Models\Category;
-use Livewire\WithPagination;
-use Livewire\WithFileUploads;
+use App\Models\Product;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
-use Illuminate\Support\Facades\Storage;
+use Livewire\Component;
+use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 
 #[Layout('components.layouts.app')]
 #[Title('Produk - POS Nasi Lawar Ulucatu')]
 class ProductIndex extends Component
 {
-    use WithPagination, WithFileUploads;
+    use WithFileUploads, WithPagination;
 
     public $search = '';
+
     public $categoryFilter = '';
+
     public $productId;
+
     public $name = '';
+
     public $sku = '';
+
     public $category_id = '';
+
     public $description = '';
+
     public $price = '';
+
     public $stock = '';
+
     public $image;
+
     public $oldImage;
+
     public $is_active = true;
+
     public $isEdit = false;
+
     public $showModal = false;
+
     public $showResetStockModal = false;
+
     public $resetStockProductId;
+
     public $resetStockProductName = '';
+
     public $resetStockValue = '';
+
     public $resetStockAll = false;
 
     protected $rules = [
@@ -93,7 +111,7 @@ class ProductIndex extends Component
     public function save()
     {
         if ($this->isEdit) {
-            $this->rules['sku'] = 'required|unique:products,sku,' . $this->productId;
+            $this->rules['sku'] = 'required|unique:products,sku,'.$this->productId;
         }
 
         $this->validate();
@@ -156,7 +174,7 @@ class ProductIndex extends Component
     public function toggleActive($id)
     {
         $product = Product::find($id);
-        $product->update(['is_active' => !$product->is_active]);
+        $product->update(['is_active' => ! $product->is_active]);
         session()->flash('message', $product->is_active ? 'Produk diaktifkan' : 'Produk dinonaktifkan');
     }
 
@@ -209,7 +227,7 @@ class ProductIndex extends Component
     public function render()
     {
         $query = Product::with('category')
-            ->where('name', 'like', '%' . $this->search . '%');
+            ->where('name', 'like', '%'.$this->search.'%');
 
         if ($this->categoryFilter) {
             $query->where('category_id', $this->categoryFilter);
@@ -220,7 +238,7 @@ class ProductIndex extends Component
 
         return view('livewire.admin.product', [
             'products' => $products,
-            'categories' => $categories
+            'categories' => $categories,
         ]);
     }
 }

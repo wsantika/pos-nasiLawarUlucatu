@@ -10,11 +10,11 @@ class KasirMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return redirect()->route('login');
         }
 
-        if (!in_array(auth()->user()->role, ['admin', 'kasir'])) {
+        if (! in_array(auth()->user()->role, ['admin', 'kasir'])) {
             return redirect()->route('login');
         }
 

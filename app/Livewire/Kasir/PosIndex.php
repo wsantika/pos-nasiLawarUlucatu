@@ -2,44 +2,66 @@
 
 namespace App\Livewire\Kasir;
 
-use Livewire\Component;
-use App\Models\Product;
 use App\Models\Category;
+use App\Models\Product;
 use App\Models\Transaction;
 use App\Models\TransactionDetail;
+use App\Services\ThermalPrinterService;
+use App\Services\TransactionPaymentService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
-use App\Services\ThermalPrinterService;
-use App\Services\TransactionPaymentService;
+use Livewire\Component;
 
 #[Layout('components.layouts.app')]
 #[Title('POS Kasir - POS Nasi Lawar Ulucatu')]
 class PosIndex extends Component
 {
     public $categories = [];
+
     public $products = [];
+
     public $selectedCategory = '';
+
     public $search = '';
+
     public $cart = [];
+
     public $subtotal = 0;
+
     public $discount = 0;
+
     public $tax = 0;
+
     public $total = 0;
+
     public $paymentMethod = 'cash';
+
     public $orderType = 'dine-in';
+
     public $tableNumber = '';
+
     public $customerName = '';
+
     public $paid = 0;
+
     public $change = 0;
+
     public $showPaymentModal = false;
+
     public $showSuccessModal = false;
+
     public $showQrisPendingModal = false;
+
     public $lastInvoice = '';
+
     public $lastTransactionId = null;
+
     public $pendingQrisTransactionId = null;
+
     public $pendingQrisInvoice = '';
+
     public $manualQrisImageUrl = null;
 
     public function mount()
@@ -54,7 +76,7 @@ class PosIndex extends Component
     {
         $path = config('services.qris_manual.image_path');
 
-        if (!$path) {
+        if (! $path) {
             return null;
         }
 
@@ -76,7 +98,7 @@ class PosIndex extends Component
         }
 
         if ($this->search) {
-            $query->where('name', 'like', '%' . $this->search . '%');
+            $query->where('name', 'like', '%'.$this->search.'%');
         }
 
         $this->products = $query->get();
@@ -98,7 +120,7 @@ class PosIndex extends Component
             ->whereKey($productId)
             ->first();
 
-        if (!$product || $product->stock <= 0) {
+        if (! $product || $product->stock <= 0) {
             session()->flash('error', 'Produk tidak tersedia atau sedang dinonaktifkan.');
             $this->loadProducts();
 
@@ -126,7 +148,7 @@ class PosIndex extends Component
                 'price' => $product->price,
                 'quantity' => 1,
                 'subtotal' => $product->price,
-                'stock' => $product->stock
+                'stock' => $product->stock,
             ];
         }
 
@@ -135,7 +157,7 @@ class PosIndex extends Component
 
     public function updateQuantity($index, $action)
     {
-        if (!isset($this->cart[$index])) {
+        if (! isset($this->cart[$index])) {
             return;
         }
 
@@ -155,7 +177,7 @@ class PosIndex extends Component
 
     public function removeFromCart($index)
     {
-        if (!isset($this->cart[$index])) {
+        if (! isset($this->cart[$index])) {
             return;
         }
 
@@ -221,8 +243,9 @@ class PosIndex extends Component
         $paid = (float) $this->paid;
         $total = (float) $this->total;
 
-        if (!$isQris && $paid < $total) {
+        if (! $isQris && $paid < $total) {
             session()->flash('error', 'Jumlah pembayaran kurang dari total transaksi.');
+
             return;
         }
 
@@ -232,7 +255,7 @@ class PosIndex extends Component
                 ? 'required|string|max:20'
                 : 'nullable|string|max:20',
             'paymentMethod' => 'required|in:cash,transfer,qris',
-            'paid' => $isQris ? 'nullable|numeric|min:0' : 'required|numeric|min:' . max(0, (float) $this->total),
+            'paid' => $isQris ? 'nullable|numeric|min:0' : 'required|numeric|min:'.max(0, (float) $this->total),
             'discount' => 'nullable|numeric|min:0',
             'tax' => 'nullable|numeric|min:0',
             'customerName' => 'nullable|string|max:100',
@@ -243,18 +266,20 @@ class PosIndex extends Component
 
         if (empty($this->cart)) {
             session()->flash('error', 'Keranjang masih kosong.');
+
             return;
         }
 
         if ((float) $this->discount > (float) $this->subtotal) {
             session()->flash('error', 'Diskon tidak boleh lebih besar dari subtotal.');
+
             return;
         }
 
         DB::beginTransaction();
 
         try {
-            $invoiceNumber = 'INV-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -5));
+            $invoiceNumber = 'INV-'.date('Ymd').'-'.strtoupper(substr(uniqid(), -5));
 
             $transaction = Transaction::create([
                 'invoice_number' => $invoiceNumber,
@@ -278,12 +303,12 @@ class PosIndex extends Component
                     ->lockForUpdate()
                     ->first();
 
-                if (!$product) {
-                    throw new \Exception('Produk "' . $item['name'] . '" sudah dinonaktifkan dan tidak bisa dibeli.');
+                if (! $product) {
+                    throw new \Exception('Produk "'.$item['name'].'" sudah dinonaktifkan dan tidak bisa dibeli.');
                 }
 
                 if ($product->stock < $item['quantity']) {
-                    throw new \Exception('Stok produk "' . $product->name . '" tidak mencukupi.');
+                    throw new \Exception('Stok produk "'.$product->name.'" tidak mencukupi.');
                 }
 
                 TransactionDetail::create([
@@ -294,7 +319,7 @@ class PosIndex extends Component
                     'subtotal' => $item['subtotal'],
                 ]);
 
-                if (!$isQris) {
+                if (! $isQris) {
                     $product->decrement('stock', $item['quantity']);
                 }
             }
@@ -323,14 +348,15 @@ class PosIndex extends Component
             $this->resetTransaction();
         } catch (\Exception $e) {
             DB::rollBack();
-            session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            session()->flash('error', 'Terjadi kesalahan: '.$e->getMessage());
         }
     }
 
     public function confirmPendingQrisPayment()
     {
-        if (!$this->pendingQrisTransactionId) {
+        if (! $this->pendingQrisTransactionId) {
             session()->flash('error', 'Tidak ada transaksi QRIS pending yang dipilih.');
+
             return;
         }
 
@@ -346,14 +372,15 @@ class PosIndex extends Component
             $this->pendingQrisInvoice = '';
             $this->loadProducts();
         } catch (\Exception $e) {
-            session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            session()->flash('error', 'Terjadi kesalahan: '.$e->getMessage());
         }
     }
 
     public function cancelPendingQrisPayment()
     {
-        if (!$this->pendingQrisTransactionId) {
+        if (! $this->pendingQrisTransactionId) {
             session()->flash('error', 'Tidak ada transaksi QRIS pending yang dipilih.');
+
             return;
         }
 
@@ -366,7 +393,7 @@ class PosIndex extends Component
             $this->pendingQrisInvoice = '';
             $this->loadProducts();
         } catch (\Exception $e) {
-            session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            session()->flash('error', 'Terjadi kesalahan: '.$e->getMessage());
         }
     }
 
@@ -388,7 +415,7 @@ class PosIndex extends Component
 
     public function printLastReceipt()
     {
-        if (!$this->lastTransactionId) {
+        if (! $this->lastTransactionId) {
             return;
         }
 
@@ -399,7 +426,7 @@ class PosIndex extends Component
             $this->closeSuccessModal();
         } catch (\Throwable $printError) {
             report($printError);
-            session()->flash('error', 'Struk gagal dicetak: ' . $printError->getMessage());
+            session()->flash('error', 'Struk gagal dicetak: '.$printError->getMessage());
         }
     }
 
