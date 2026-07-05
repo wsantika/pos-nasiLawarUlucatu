@@ -14,7 +14,7 @@ Project ini dibuat sebagai **Minimum Viable Product (MVP)** untuk Ujian Akhir Se
 - [4. Ruang Lingkup Sistem](#4-ruang-lingkup-sistem)
 - [5. Fitur MVP](#5-fitur-mvp)
 - [6. Tech Stack](#6-tech-stack)
-- [7. Arsitektur Sistem MVC Laravel](#7-arsitektur-sistem-mvc-laravel)
+- [7. Arsitektur Sistem Layered Architecture](#7-arsitektur-sistem-layered-architecture)
 - [8. Design Patterns yang Digunakan](#8-design-patterns-yang-digunakan)
 - [9. Struktur Folder Project](#9-struktur-folder-project)
 - [10. Database dan ERD](#10-database-dan-erd)
@@ -25,7 +25,7 @@ Project ini dibuat sebagai **Minimum Viable Product (MVP)** untuk Ujian Akhir Se
 - [15. Dokumentasi Tambahan](#15-dokumentasi-tambahan)
 - [16. Status MVP](#16-status-mvp)
 - [17. Checklist Pengumpulan UAS](#17-checklist-pengumpulan-uas)
-- [18. Referensi Design Pattern](#18-referensi-design-pattern)
+- [18. Referensi Arsitektur dan Design Pattern](#18-referensi-arsitektur-dan-design-pattern)
 - [19. Lisensi](#19-lisensi)
 
 ---
@@ -42,18 +42,18 @@ Fokus utama pengembangan project ini bukan hanya membuat aplikasi yang berjalan,
 
 ## 2. Informasi Project
 
-| Keterangan          | Detail                             |
-| ------------------- | ---------------------------------- |
-| Nama Project        | POS Nasi Lawar Ulucatu             |
-| Jenis Aplikasi      | Web-based Point of Sale            |
-| Framework Utama     | Laravel                            |
-| Frontend            | Blade, Livewire, Tailwind CSS      |
-| Database            | MySQL                              |
-| Arsitektur          | MVC Laravel                        |
-| Design Pattern GoF  | Adapter Pattern dan Facade Pattern |
-| Metode Pengembangan | Waterfall                          |
-| Target Pengguna     | Admin/Owner dan Kasir              |
-| Status              | MVP selesai                        |
+| Keterangan          | Detail                                                 |
+| ------------------- | ------------------------------------------------------ |
+| Nama Project        | POS Nasi Lawar Ulucatu                                 |
+| Jenis Aplikasi      | Web-based Point of Sale                                |
+| Framework Utama     | Laravel                                                |
+| Frontend            | Blade, Livewire, Tailwind CSS                          |
+| Database            | MySQL                                                  |
+| Arsitektur          | Layered Architecture berbasis Laravel MVC dan Livewire |
+| Design Pattern GoF  | Adapter Pattern dan Facade Pattern                     |
+| Metode Pengembangan | Waterfall                                              |
+| Target Pengguna     | Admin/Owner dan Kasir                                  |
+| Status              | MVP selesai                                            |
 
 ---
 
@@ -61,10 +61,10 @@ Fokus utama pengembangan project ini bukan hanya membuat aplikasi yang berjalan,
 
 > Link video individu dapat dilengkapi setelah masing-masing anggota mengunggah video ke YouTube Unlisted atau Google Drive.
 
-| No  | Nama                       | NIM      | Peran                                                      | Issue/Fitur yang Dikerjakan                                                                                                                                     | Link Video Individu |
-| --- | -------------------------- | -------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
-| 1   | Kadek Wahyu Santika Putra  | 42430012 | Fullstack Developer / Admin, Payment & Printer Integration | Issue #6 Modul Manajemen Master Data Admin, Issue #8 Integrasi Pembayaran QRIS Dinamis, Issue #9 Integrasi Printer Thermal, bugfix tambahan pada flow transaksi | Isi link video      |
-| 2   | I Nyoman Theo Ardiles Rada | 42430018 | Fullstack Developer / POS Flow, Report & UI Fixing         | POS kasir, cart management, reset stok, export laporan PDF, perbaikan tampilan dan navigasi                                                                     | Isi link video      |
+| No  | Nama                       | NIM      | Peran                                                      | Issue/Fitur yang Dikerjakan                                                                                                | Link Video Individu |
+| --- | -------------------------- | -------- | ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ------------------- |
+| 1   | Kadek Wahyu Santika Putra  | 42430012 | Fullstack Developer / Admin, Payment & Printer Integration | Issue #8 Integrasi Pembayaran QRIS Dinamis, Issue #9 Integrasi Printer Thermal, Issue #10 Feature Dasbor & Laporan - Admin | Isi link video      |
+| 2   | I Nyoman Theo Ardiles Rada | 42430018 | Fullstack Developer / POS Flow, Report & UI Fixing         | POS kasir, cart management, reset stok, export laporan PDF, perbaikan tampilan dan navigasi                                | Isi link video      |
 
 ---
 
@@ -155,97 +155,100 @@ Kasir dapat:
 
 ---
 
-## 7. Arsitektur Sistem MVC Laravel
+## 7. Arsitektur Sistem - Layered Architecture
 
-Project ini menggunakan arsitektur **MVC (Model-View-Controller)** yang merupakan pola arsitektur utama pada framework Laravel. MVC digunakan agar kode aplikasi lebih terstruktur dengan memisahkan bagian data, tampilan, dan alur kontrol aplikasi.
+Project ini menggunakan **Layered Architecture berbasis Laravel MVC dan Livewire**. MVC tetap digunakan sebagai pola bawaan Laravel untuk memisahkan Model, View, dan Controller, tetapi pada dokumentasi ini MVC diposisikan sebagai bagian dari arsitektur aplikasi, bukan sebagai design pattern GoF utama.
 
-Referensi konsep MVC pada project ini mengikuti contoh pola MVC pada repository pembelajaran design pattern dari Humadev, di mana aplikasi dipisahkan menjadi bagian **Model**, **View**, dan **Controller**.
+Arsitektur project dibagi menjadi tiga lapisan utama sesuai requirement UAS: **Presentation (UI / Handler)**, **Business/Application Logic (Service / Usecase)**, dan **Infrastructure/Data Access (Eloquent / Database)**.
 
-### 7.1 Model
+### 7.1 Presentation Layer (UI / Handler)
 
-Model bertanggung jawab untuk merepresentasikan data dan relasi database. Pada project ini, model digunakan untuk membaca, menyimpan, mengubah, dan menghapus data aplikasi.
-
-**Lokasi File:**
-
-- `app/Models/User.php`
-- `app/Models/Category.php`
-- `app/Models/Product.php`
-- `app/Models/Transaction.php`
-- `app/Models/TransactionDetail.php`
-
-**Contoh tanggung jawab Model:**
-
-- `User` menyimpan data akun admin dan kasir.
-- `Category` menyimpan data kategori produk/menu.
-- `Product` menyimpan data menu, harga, stok, kategori, dan status aktif.
-- `Transaction` menyimpan data utama transaksi.
-- `TransactionDetail` menyimpan daftar item pada transaksi.
-
-### 7.2 View
-
-View bertanggung jawab untuk menampilkan antarmuka pengguna. Pada project ini, View dibuat menggunakan Blade dan Livewire view untuk menampilkan halaman admin, halaman kasir, dashboard, form input, tabel data, halaman transaksi, dan laporan.
+Presentation Layer bertanggung jawab menerima request dari user, menangani interaksi UI, validasi input awal, dan menampilkan response ke pengguna.
 
 **Lokasi File:**
 
+- `routes/web.php`
+- `app/Http/Controllers`
+- `app/Livewire`
 - `resources/views`
 - `resources/views/livewire`
 - `resources/views/components`
 
-**Contoh tanggung jawab View:**
+**Contoh tanggung jawab:**
 
-- Menampilkan halaman login.
-- Menampilkan dashboard admin.
-- Menampilkan tabel kategori dan produk.
-- Menampilkan halaman POS kasir.
-- Menampilkan modal pembayaran.
-- Menampilkan halaman laporan dan transaksi.
+- Route mengarahkan user ke halaman login, dashboard admin, POS kasir, dan laporan.
+- Controller menangani request export laporan PDF.
+- Livewire Component mengatur state UI seperti cart, modal pembayaran, filter, dan form input.
+- Blade View menampilkan halaman admin, kasir, transaksi, dan laporan.
 
-### 7.3 Controller / Livewire Component
+### 7.2 Business / Application Logic Layer (Service / Usecase)
 
-Controller bertanggung jawab untuk mengatur alur request dan menghubungkan Model dengan View. Pada project ini, selain controller Laravel, beberapa interaksi dinamis juga ditangani oleh Livewire Component.
+Business/Application Logic Layer bertanggung jawab menjalankan aturan bisnis aplikasi. Layer ini digunakan agar logic penting tidak seluruhnya menumpuk di view atau controller.
 
 **Lokasi File:**
 
-- `app/Http/Controllers`
-- `app/Livewire`
-- `routes/web.php`
+- `app/Services/TransactionPaymentService.php`
+- `app/Services/ThermalPrinterService.php`
+- `app/Livewire/Kasir/PosIndex.php`
 
-**Contoh tanggung jawab Controller / Livewire Component:**
+**Contoh tanggung jawab:**
 
-- Mengatur route halaman admin dan kasir.
-- Mengelola input dari user.
-- Memanggil model atau service yang dibutuhkan.
-- Mengarahkan data ke view.
-- Mengelola alur transaksi POS.
-- Mengatur export laporan PDF.
+- Mengonfirmasi pembayaran QRIS pending menjadi success.
+- Membatalkan pembayaran QRIS pending menjadi failed.
+- Mengurangi stok setelah pembayaran berhasil.
+- Menyiapkan proses cetak struk pelanggan dan kitchen order ticket.
+- Mengatur alur transaksi POS yang masih berada di Livewire Component.
 
-### 7.4 Alur MVC pada Project
+### 7.3 Infrastructure / Data Access Layer (Eloquent / Database)
+
+Infrastructure/Data Access Layer bertanggung jawab terhadap akses database, ORM, query builder, migration, konfigurasi, dan integrasi library eksternal.
+
+**Lokasi File:**
+
+- `app/Models`
+- `database/migrations`
+- `config`
+- `app/Services/ThermalPrinterService.php`
+- `app/Http/Controllers/Admin/DashboardReportController.php`
+
+**Contoh tanggung jawab:**
+
+- Eloquent Model merepresentasikan tabel seperti `users`, `categories`, `products`, `transactions`, dan `transaction_details`.
+- Query Builder dan `DB` Facade digunakan untuk query laporan dan agregasi data.
+- Migration mendefinisikan struktur database MySQL.
+- DomPDF digunakan untuk membuat laporan PDF.
+- `mike42/escpos-php` digunakan untuk komunikasi dengan printer thermal.
+
+> Catatan: project ini belum menerapkan **Repository Pattern** secara eksplisit. Akses data masih menggunakan Eloquent ORM dan Query Builder Laravel. Pemisahan layer dilakukan melalui struktur Laravel, Livewire Component, dan Service Layer.
+
+### 7.4 Alur Layered Architecture pada Project
 
 ```mermaid
 flowchart TD
-    A[User/Admin/Kasir] --> B[Route Laravel]
-    B --> C[Controller / Livewire Component]
-    C --> D[Model / Service]
+    A[User/Admin/Kasir] --> B[Presentation<br/>Route, Controller, Livewire, Blade]
+    B --> C[Business Logic<br/>Service dan Usecase Flow]
+    C --> D[Infrastructure/Data Access<br/>Eloquent, DB Facade, External Library]
     D --> E[(MySQL Database)]
-    C --> F[Blade / Livewire View]
-    F --> A
+    D --> F[PDF Generator / Thermal Printer]
+    B --> A
 ```
 
-### 7.5 Manfaat MVC pada Project
+### 7.5 Hubungan dengan MVC Laravel
 
-Dengan menggunakan MVC, project ini memiliki beberapa manfaat:
+MVC pada Laravel tetap digunakan sebagai struktur dasar:
 
-- Kode lebih terstruktur.
-- Bagian data, tampilan, dan kontrol tidak dicampur dalam satu file.
-- Pengembangan fitur lebih mudah dibagi antar anggota kelompok.
-- Perubahan tampilan tidak selalu memengaruhi logic database.
-- Logic aplikasi lebih mudah dibaca dan dirawat.
+- **Model** berada di Infrastructure/Data Access Layer melalui Eloquent ORM.
+- **View** berada di Presentation Layer melalui Blade dan Livewire View.
+- **Controller / Livewire Component** berada di Presentation Layer sebagai handler request dan interaksi UI.
+- **Service** membantu memisahkan sebagian Business/Application Logic dari Controller dan Livewire Component.
+
+Dengan pendekatan ini, project tetap mengikuti struktur Laravel, tetapi penjelasan arsitekturnya lebih sesuai dengan requirement UAS yang meminta pemisahan layer.
 
 ---
 
 ## 8. Design Patterns yang Digunakan
 
-Selain menggunakan MVC sebagai arsitektur utama, project ini juga menerapkan dua design pattern dari rumpun **Gang of Four (GoF)**, yaitu **Adapter Pattern** dan **Facade Pattern**.
+Selain menggunakan Layered Architecture berbasis Laravel MVC dan Livewire, project ini juga menerapkan dua design pattern dari rumpun **Gang of Four (GoF)**, yaitu **Adapter Pattern** dan **Facade Pattern**.
 
 Design pattern ini digunakan untuk memenuhi kebutuhan rekayasa perangkat lunak agar kode lebih modular, mudah dirawat, dan tidak terlalu bergantung langsung pada detail teknis library eksternal.
 
@@ -634,17 +637,51 @@ composer test
 
 Project menggunakan **Laravel Pint** untuk menjaga style kode PHP.
 
+**Command yang tersedia:**
+
 ```bash
 ./vendor/bin/pint
 ```
 
-### 12.3 Build Asset
+```bash
+composer lint
+composer lint:fix
+```
+
+### 12.3 Linter
+
+Project menggunakan **Laravel Pint** sebagai linter/formatter untuk memastikan kode PHP tetap konsisten dan bebas dari style issue.
+
+Hasil verifikasi yang sudah dijalankan:
+
+```bash
+composer lint
+```
+
+Status:
+
+```txt
+PASS - 50 files
+```
+
+### 12.4 Clean Code
+
+Project ini menerapkan clean code pada bagian yang sudah dikerjakan dengan cara:
+
+- Menjaga nama class, method, dan variabel agar jelas sesuai tujuan.
+- Memisahkan logic bisnis ke `app/Services` agar tidak menumpuk di controller atau view.
+- Menggunakan method kecil dan fokus pada satu tanggung jawab.
+- Menjaga controller hanya untuk handler request dan alur utama.
+- Menghindari duplikasi logic pada transaksi, pembayaran, dan printer.
+- Menjalankan formatter/linter untuk menjaga konsistensi style kode.
+
+### 12.5 Build Asset
 
 ```bash
 npm run build
 ```
 
-### 12.4 Clear Cache
+### 12.6 Clear Cache
 
 Jika terdapat perubahan view, config, atau route, jalankan:
 
@@ -652,7 +689,7 @@ Jika terdapat perubahan view, config, atau route, jalankan:
 php artisan optimize:clear
 ```
 
-### 12.5 Bukti Verifikasi
+### 12.7 Bukti Verifikasi
 
 ```txt
 php artisan test
@@ -709,20 +746,20 @@ Video individu harus mencakup:
 2. Branch `feature/` yang dikerjakan.
 3. Pull Request yang dibuat atau direview.
 4. Demo kode dari fitur/modul yang dikerjakan.
-5. Penjelasan arsitektur MVC pada bagian kode.
+5. Penjelasan Layered Architecture berbasis Laravel MVC dan Livewire pada bagian kode.
 6. Penjelasan design pattern yang diterapkan.
 7. Pembuktian linter, formatter, testing, atau clean code.
 8. Demo aplikasi secara singkat.
 
 ### 14.2 Fokus Video Santika
 
-| Bagian         | Penjelasan                                        |
-| -------------- | ------------------------------------------------- |
-| Issue utama    | Issue #6, #8, #9                                  |
-| Fitur          | Master data admin, QRIS, printer thermal          |
-| Arsitektur     | MVC Laravel                                       |
-| Design Pattern | Adapter Pattern pada `ThermalPrinterService.php`  |
-| Clean Code     | Pemisahan logic printer dan pembayaran ke service |
+| Bagian         | Penjelasan                                             |
+| -------------- | ------------------------------------------------------ |
+| Issue utama    | Issue #8, #9, #10                                      |
+| Fitur          | QRIS, printer thermal, Dashboard & Report              |
+| Arsitektur     | Layered Architecture berbasis Laravel MVC dan Livewire |
+| Design Pattern | Adapter Pattern pada `ThermalPrinterService.php`       |
+| Clean Code     | Pemisahan logic printer dan pembayaran ke service      |
 
 ### 14.3 Fokus Video Rada
 
@@ -730,7 +767,7 @@ Video individu harus mencakup:
 | ----------------- | ------------------------------------------------------------- |
 | Issue/Fitur utama | POS kasir, cart management, reset stok, export PDF, UI fixing |
 | Fitur             | POS flow, laporan, PDF export                                 |
-| Arsitektur        | MVC Laravel                                                   |
+| Arsitektur        | Layered Architecture berbasis Laravel MVC dan Livewire        |
 | Design Pattern    | Facade Pattern pada export PDF                                |
 | Clean Code        | Pemisahan tampilan, controller, model, dan service            |
 
@@ -745,7 +782,6 @@ Dokumentasi yang disarankan:
 - Use Case Diagram
 - Activity Diagram
 - ERD
-
 
 ---
 
@@ -775,14 +811,14 @@ Dokumentasi yang disarankan:
 - [x] Validasi input tersedia pada fitur penting.
 - [x] Error handling dasar tersedia.
 - [x] Struktur folder mengikuti Laravel.
-- [x] Arsitektur MVC dijelaskan di README.
+- [x] Layered Architecture berbasis Laravel MVC dan Livewire dijelaskan di README.
 - [x] Minimal 2 GoF design pattern didokumentasikan.
 - [x] Letak file design pattern dicantumkan.
 - [x] README utama tersedia.
 - [x] Data kontribusi anggota tersedia.
 - [ ] Link video individu sudah lengkap.
 - [x] Folder `docs/` sudah berisi diagram final jika ada pembaruan dari UTS.
-- [ ] Screenshot atau bukti testing/linter sudah disiapkan.
+- [x] Screenshot atau bukti testing/linter sudah disiapkan.
 
 ### 17.2 Git dan Kolaborasi
 
@@ -795,12 +831,12 @@ Dokumentasi yang disarankan:
 
 ---
 
-## 18. Referensi Design Pattern
+## 18. Referensi Arsitektur dan Design Pattern
 
-Referensi design pattern yang digunakan:
+Referensi arsitektur dan design pattern yang digunakan:
 
 - Humadev Design Pattern Repository: `https://github.com/humadev/design_pattern`
-- MVC Pattern: `https://github.com/humadev/design_pattern/tree/main/mvc`
+- MVC Pattern sebagai referensi pendukung arsitektur Laravel: `https://github.com/humadev/design_pattern/tree/main/mvc`
 - Adapter Pattern: `https://github.com/humadev/design_pattern/blob/main/gof/06_adapter.ts`
 - Facade Pattern: `https://github.com/humadev/design_pattern/blob/main/gof/10_facade.ts`
 
