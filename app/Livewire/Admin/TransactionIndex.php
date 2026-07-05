@@ -2,11 +2,11 @@
 
 namespace App\Livewire\Admin;
 
-use Livewire\Component;
 use App\Models\Transaction;
 use App\Services\TransactionPaymentService;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
+use Livewire\Component;
 use Livewire\WithPagination;
 
 #[Layout('components.layouts.app')]
@@ -16,11 +16,17 @@ class TransactionIndex extends Component
     use WithPagination;
 
     public $search = '';
+
     public $dateFrom = '';
+
     public $dateTo = '';
+
     public $paymentMethodFilter = '';
+
     public $paymentStatusFilter = '';
+
     public $selectedTransaction;
+
     public $showDetailModal = false;
 
     public function updatingSearch()
@@ -77,7 +83,7 @@ class TransactionIndex extends Component
                 $this->selectedTransaction = Transaction::with(['details.product', 'user'])->find($transaction->id);
             }
         } catch (\Exception $e) {
-            session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            session()->flash('error', 'Terjadi kesalahan: '.$e->getMessage());
         }
     }
 
@@ -93,14 +99,14 @@ class TransactionIndex extends Component
                 $this->selectedTransaction = Transaction::with(['details.product', 'user'])->find($transaction->id);
             }
         } catch (\Exception $e) {
-            session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            session()->flash('error', 'Terjadi kesalahan: '.$e->getMessage());
         }
     }
 
     public function render()
     {
         $query = Transaction::with('user')
-            ->where('invoice_number', 'like', '%' . $this->search . '%');
+            ->where('invoice_number', 'like', '%'.$this->search.'%');
 
         if ($this->dateFrom) {
             $query->whereDate('created_at', '>=', $this->dateFrom);

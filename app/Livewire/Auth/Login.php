@@ -2,17 +2,19 @@
 
 namespace App\Livewire\Auth;
 
-use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
+use Livewire\Component;
 
 #[Layout('components.layouts.guest')]
 #[Title('Login - POS Nasi Lawar Ulucatu')]
 class Login extends Component
 {
     public $email = '';
+
     public $password = '';
+
     public $remember = false;
 
     protected $rules = [

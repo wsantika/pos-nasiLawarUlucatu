@@ -30,12 +30,12 @@ class TransactionPaymentService
                     ->lockForUpdate()
                     ->first();
 
-                if (!$product) {
-                    throw new \Exception('Produk "' . ($detail->product->name ?? 'Tidak diketahui') . '" sudah dinonaktifkan.');
+                if (! $product) {
+                    throw new \Exception('Produk "'.($detail->product->name ?? 'Tidak diketahui').'" sudah dinonaktifkan.');
                 }
 
                 if ($product->stock < $detail->quantity) {
-                    throw new \Exception('Stok produk "' . $product->name . '" tidak mencukupi.');
+                    throw new \Exception('Stok produk "'.$product->name.'" tidak mencukupi.');
                 }
 
                 $product->decrement('stock', $detail->quantity);

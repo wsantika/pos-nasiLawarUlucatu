@@ -4,8 +4,8 @@ namespace App\Services;
 
 use App\Models\Transaction;
 use Mike42\Escpos\CapabilityProfile;
-use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
+use Mike42\Escpos\Printer;
 
 class ThermalPrinterService
 {
@@ -18,7 +18,7 @@ class ThermalPrinterService
 
     public function printCustomerReceipt(Transaction $transaction): void
     {
-        if (!config('thermal-printer.enabled')) {
+        if (! config('thermal-printer.enabled')) {
             return;
         }
 
@@ -52,7 +52,7 @@ class ThermalPrinterService
             foreach ($transaction->details as $detail) {
                 $printer->text($this->wrap($detail->product->name ?? 'Produk'));
 
-                $qtyPrice = $detail->quantity . ' x ' . $this->money($detail->price);
+                $qtyPrice = $detail->quantity.' x '.$this->money($detail->price);
                 $subtotal = $this->money($detail->subtotal);
 
                 $printer->text($this->row($qtyPrice, $subtotal));
@@ -87,7 +87,7 @@ class ThermalPrinterService
 
     public function printKitchenTicket(Transaction $transaction): void
     {
-        if (!config('thermal-printer.enabled')) {
+        if (! config('thermal-printer.enabled')) {
             return;
         }
 
@@ -118,7 +118,7 @@ class ThermalPrinterService
 
             foreach ($transaction->details as $detail) {
                 $printer->setEmphasis(true);
-                $printer->text($detail->quantity . 'x ');
+                $printer->text($detail->quantity.'x ');
                 $printer->setEmphasis(false);
                 $printer->text($this->wrap($detail->product->name ?? 'Produk'));
             }
@@ -146,7 +146,7 @@ class ThermalPrinterService
 
     private function separator(): string
     {
-        return str_repeat('-', $this->lineWidth) . "\n";
+        return str_repeat('-', $this->lineWidth)."\n";
     }
 
     private function row(string $left, string $right): string
@@ -160,17 +160,17 @@ class ThermalPrinterService
             $space = 1;
         }
 
-        return $left . str_repeat(' ', $space) . $right . "\n";
+        return $left.str_repeat(' ', $space).$right."\n";
     }
 
     private function wrap(string $text): string
     {
-        return wordwrap($text, $this->lineWidth, "\n", true) . "\n";
+        return wordwrap($text, $this->lineWidth, "\n", true)."\n";
     }
 
     private function money($amount): string
     {
-        return 'Rp ' . number_format((float) $amount, 0, ',', '.');
+        return 'Rp '.number_format((float) $amount, 0, ',', '.');
     }
 
     private function formatOrderType(?string $orderType): string

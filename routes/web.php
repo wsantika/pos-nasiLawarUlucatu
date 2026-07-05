@@ -1,14 +1,14 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
-use App\Livewire\Auth\Login;
+use App\Livewire\Admin\CategoryIndex;
 use App\Livewire\Admin\Dashboard;
 use App\Livewire\Admin\ProductIndex;
-use App\Livewire\Admin\CategoryIndex;
 use App\Livewire\Admin\TransactionIndex;
+use App\Livewire\Auth\Login;
 use App\Livewire\Kasir\KasirDashboard;
 use App\Livewire\Kasir\PosIndex;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 // Route untuk tamu (belum login)
 Route::middleware('guest')->group(function () {
@@ -37,5 +37,6 @@ Route::post('/logout', function () {
     Auth::logout();
     request()->session()->invalidate();
     request()->session()->regenerateToken();
+
     return redirect('/');
 })->name('logout');
