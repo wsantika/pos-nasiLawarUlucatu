@@ -61,10 +61,10 @@ Fokus utama pengembangan project ini bukan hanya membuat aplikasi yang berjalan,
 
 > Link video individu dapat dilengkapi setelah masing-masing anggota mengunggah video ke YouTube Unlisted atau Google Drive.
 
-| No  | Nama                       | NIM      | Peran                                                      | Issue/Fitur yang Dikerjakan                                                                                                | Link Video Individu |
-| --- | -------------------------- | -------- | ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ------------------- |
-| 1   | Kadek Wahyu Santika Putra  | 42430012 | Fullstack Developer / Admin, Payment & Printer Integration | Issue #8 Integrasi Pembayaran QRIS Dinamis, Issue #9 Integrasi Printer Thermal, Issue #10 Feature Dasbor & Laporan - Admin | Isi link video      |
-| 2   | I Nyoman Theo Ardiles Rada | 42430018 | Fullstack Developer / POS Flow, Report & UI Fixing         | POS kasir, cart management, reset stok, export laporan PDF, perbaikan tampilan dan navigasi                                | Isi link video      |
+| No  | Nama                       | NIM      | Peran                                                      | Issue/Fitur yang Dikerjakan                                                                                                | Link Video Individu                                                                |
+| --- | -------------------------- | -------- | ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| 1   | Kadek Wahyu Santika Putra  | 42430012 | Fullstack Developer / Admin, Payment & Printer Integration | Issue #8 Integrasi Pembayaran QRIS Dinamis, Issue #9 Integrasi Printer Thermal, Issue #10 Feature Dasbor & Laporan - Admin | https://drive.google.com/file/d/1_tY9l7yT_4HiJQnjgaE_KX5wDqPkEZk6/view?usp=sharing |
+| 2   | I Nyoman Theo Ardiles Rada | 42430018 | Fullstack Developer / POS Flow, Report & UI Fixing         | POS kasir, cart management, reset stok, export laporan PDF, perbaikan tampilan dan navigasi                                | Isi link video                                                                     |
 
 ---
 
@@ -827,7 +827,7 @@ Dokumentasi yang disarankan:
 - [x] Branch `dev` digunakan untuk integrasi pengembangan.
 - [x] Fitur dikerjakan pada branch `feature/nama-fitur`.
 - [x] Pull Request digunakan saat merge fitur.
-- [ ] Bukti PR/review sudah siap ditampilkan pada video individu.
+- [x] Bukti PR/review sudah siap ditampilkan pada video individu.
 
 ---
 
